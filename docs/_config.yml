@@ -3,8 +3,8 @@
 
 title: "Diting AI Skills"
 description: "Official documentation for Diting AI Skills - AI-powered video transcription and knowledge management tools"
-baseurl: "/diting-ai-skills" # 仓库名称
-url: "https://diting-ai.github.io" # GitHub 用户名或组织名
+baseurl: "" # 对于用户/组织页面，baseurl 应该为空
+url: "https://ditingai.github.io" # GitHub 用户名或组织名
 
 # 构建设置
 markdown: kramdown
