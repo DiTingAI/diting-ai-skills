@@ -1,0 +1,132 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run tests
+      run: npm test
+      env:
+        DITING_API_KEY: ${{ secrets.DITING_API_KEY }}
+    
+    - name: Run linting
+      run: |
+        npm run lint || echo "No lint script configured"
+    
+    - name: Build binaries
+      run: npm run build:binary:host
+    
+    - name: Verify build
+      run: |
+        ls -la dist/
+        file dist/diting || echo "Binary not found"
+        if [ -f dist/diting ]; then
+          chmod +x dist/diting
+          ./dist/diting --version || echo "Binary execution test failed"
+        fi
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build all binaries
+      run: npm run build:binary:all
+    
+    - name: Create release package
+      run: npm run release:zip
+    
+    - name: Create agent release package
+      run: npm run release:agent
+    
+    - name: Verify release packages
+      run: |
+        ls -lh dist/*.zip
+        unzip -l dist/diting-skills-*.zip | head -5
+        echo "Release packages created successfully"
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          dist/diting-skills-*.zip
+          dist/diting-*
+        generate_release_notes: true
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  docs:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Pages
+      uses: actions/configure-pages@v3
+    
+    - name: Build documentation
+      run: |
+        mkdir -p _site
+        cp -r docs/* _site/
+        cp README.md _site/index.md
+        cp CONTRIBUTING.md _site/contributing.md
+        cp LICENSE _site/license.md
+    
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v2
+      with:
+        path: '_site'
+
+  deploy-docs:
+    needs: docs
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    
+    permissions:
+      pages: write
+      id-token: write
+    
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v2

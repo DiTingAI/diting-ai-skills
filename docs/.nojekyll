@@ -1,0 +1,3 @@
+# This file tells GitHub Pages not to process the site with Jekyll
+# We're using Jekyll, but this file can be used to exclude certain files
+# or disable Jekyll processing entirely if needed

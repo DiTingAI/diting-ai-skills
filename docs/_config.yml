@@ -1,0 +1,107 @@
+# GitHub Pages 配置文件
+# 用于 diting-skills 项目的文档站点
+
+title: "Diting AI Skills"
+description: "Official documentation for Diting AI Skills - AI-powered video transcription and knowledge management tools"
+baseurl: "/diting-skills" # 仓库名称
+url: "https://diting-ai.github.io" # GitHub 用户名或组织名
+
+# 构建设置
+markdown: kramdown
+highlighter: rouge
+permalink: pretty
+
+# 主题设置
+theme: jekyll-theme-cayman
+
+# 插件（GitHub Pages 支持的插件）
+plugins:
+  - jekyll-seo-tag
+  - jekyll-sitemap
+  - jekyll-feed
+
+# SEO 配置
+author:
+  name: "Diting AI"
+  email: "support@diting.cc"
+
+# 社交链接
+social:
+  github: diting-ai
+  twitter: diting_ai
+
+# 导航
+navigation:
+  - title: "Home"
+    url: /
+  - title: "Getting Started"
+    url: /guides/quick-start
+  - title: "API Reference"
+    url: /api/cli-commands
+  - title: "FAQ"
+    url: /faq/common-issues
+  - title: "GitHub"
+    url: https://github.com/diting-ai/diting-skills
+
+# 排除文件
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+
+# 包含文件
+include:
+  - "_*.yml"
+  - "*.md"
+  - "*.html"
+
+# 默认值
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+      permalink: "/:basename"
+  - scope:
+      path: "guides"
+      type: "pages"
+    values:
+      layout: "guide"
+      permalink: "/guides/:basename"
+  - scope:
+      path: "api"
+      type: "pages"
+    values:
+      layout: "api"
+      permalink: "/api/:basename"
+  - scope:
+      path: "faq"
+      type: "pages"
+    values:
+      layout: "faq"
+      permalink: "/faq/:basename"
+
+# 自定义变量
+repository: "diting-ai/diting-skills"
+version: "1.0.1"
+last_updated: "2026-07-06"
+
+# 搜索配置
+search: true
+
+# 评论系统（可选）
+# comments:
+#   provider: "giscus"
+#   repo: "diting-ai/diting-skills"
+#   repo-id: "R_kgDOLp1234"
+#   category: "Announcements"
+#   category-id: "DIC_kwDOLp1234"
+#   mapping: "pathname"
+#   reactions-enabled: "1"
+#   emit-metadata: "0"
+#   theme: "light"
