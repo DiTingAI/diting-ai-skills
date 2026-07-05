@@ -47,9 +47,9 @@ Welcome to the official documentation for Diting AI Skills!
 
 ## 🔗 Quick Links
 - **Website**: https://diting.cc
-- **GitHub Repository**: https://github.com/diting-ai/diting-skills
+- **GitHub Repository**: https://github.com/diting-ai/diting-ai-skills
 - **API Documentation**: https://api.diting.cc/docs
-- **Issue Tracker**: https://github.com/diting-ai/diting-skills/issues
+- **Issue Tracker**: https://github.com/diting-ai/diting-ai-skills/issues
 
 ## 📞 Support
 - **Email**: support@diting.cc

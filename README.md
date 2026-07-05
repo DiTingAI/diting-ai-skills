@@ -5,7 +5,7 @@
 [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey.svg)]()
 [![GitHub Stars](https://img.shields.io/github/stars/diting-ai/diting-skills?style=social)]()
 [![Downloads](https://img.shields.io/github/downloads/diting-ai/diting-skills/total)]()
-[![GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://diting-ai.github.io/diting-skills/)
+[![GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://diting-ai.github.io/diting-ai-skills/)
 
 **Convert videos to text in seconds with AI. Supports Bilibili links, local files, and knowledge base search. Perfect for AI assistants like XiaoLongXia, Cursor, Claude, and Codex.**
 
@@ -172,7 +172,7 @@ curl -sSL https://raw.githubusercontent.com/diting-ai/diting-skills/main/install
 ## 📚 Documentation
 
 ### Quick Links
-- **[Online Documentation](https://diting-ai.github.io/diting-skills/)** - Full documentation hosted on GitHub Pages
+- **[Online Documentation](https://diting-ai.github.io/diting-ai-skills/)** - Full documentation hosted on GitHub Pages
 - **[API Documentation](https://api.diting.cc/docs)** - Complete API reference
 - **[SKILL Documentation](SKILL.md)** - Detailed skill usage guide
 - **[Agent Installation Guide](AGENT_INSTALL_PROMPT.md)** - AI assistant integration
@@ -180,7 +180,7 @@ curl -sSL https://raw.githubusercontent.com/diting-ai/diting-skills/main/install
 
 ### GitHub Pages Documentation
 This project includes comprehensive documentation hosted on GitHub Pages:
-- **URL**: https://diting-ai.github.io/diting-skills/
+- **URL**: https://diting-ai.github.io/diting-ai-skills/
 - **Source**: `/docs` directory in this repository
 - **Auto-deployment**: Automatic deployment on push to main branch
 - **Custom domain**: Can be configured for custom domain support

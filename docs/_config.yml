@@ -1,9 +1,9 @@
 # GitHub Pages 配置文件
-# 用于 diting-skills 项目的文档站点
+# 用于 diting-ai-skills 项目的文档站点
 
 title: "Diting AI Skills"
 description: "Official documentation for Diting AI Skills - AI-powered video transcription and knowledge management tools"
-baseurl: "/diting-skills" # 仓库名称
+baseurl: "/diting-ai-skills" # 仓库名称
 url: "https://diting-ai.github.io" # GitHub 用户名或组织名
 
 # 构建设置
@@ -41,7 +41,7 @@ navigation:
   - title: "FAQ"
     url: /faq/common-issues
   - title: "GitHub"
-    url: https://github.com/diting-ai/diting-skills
+    url: https://github.com/diting-ai/diting-ai-skills
 
 # 排除文件
 exclude:
@@ -87,7 +87,7 @@ defaults:
       permalink: "/faq/:basename"
 
 # 自定义变量
-repository: "diting-ai/diting-skills"
+repository: "diting-ai/diting-ai-skills"
 version: "1.0.1"
 last_updated: "2026-07-06"
 
@@ -97,7 +97,7 @@ search: true
 # 评论系统（可选）
 # comments:
 #   provider: "giscus"
-#   repo: "diting-ai/diting-skills"
+#   repo: "diting-ai/diting-ai-skills"
 #   repo-id: "R_kgDOLp1234"
 #   category: "Announcements"
 #   category-id: "DIC_kwDOLp1234"
