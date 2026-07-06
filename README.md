@@ -11,6 +11,7 @@
 
 ## 🎬 Video Tutorial
 
+<<<<<<< HEAD
 <div align="center">
   <video 
     src="https://github.com/user-attachments/assets/ca873939-e925-414f-a700-1b9bf5f73a57"
@@ -30,6 +31,8 @@
     <img src="https://img.shields.io/badge/Bilibili-📺_Watch_Full_Tutorial-FB7299?style=flat-square&logo=bilibili&logoColor=white" alt="Watch on Bilibili">
   </a>
 </div>
+=======
+>>>>>>> 47cbddd11086423e5c9d64320699d4626ce47c9a
 
 > 💡 **New to Diting AI?** This video walks you through installation, API key setup, and your first video transcription — all in just a few minutes!
 
