@@ -19,7 +19,7 @@
     preload="metadata"
     style="max-width:100%; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.15);"
   >
-    <source src="assets/images/diting-demo.mp4" type="video/mp4">
+    <source src="https://raw.githubusercontent.com/DiTingAI/diting-ai-skills/main/assets/videos/diting-ai-openclaw-skills.mp4" type="video/mp4">
     <!-- Fallback: clickable poster image for environments that strip <video> tags -->
     <a href="https://www.bilibili.com/video/BV1T7Td69EyF" target="_blank" rel="noopener noreferrer">
       <img src="assets/images/demo-poster.png" alt="Diting AI Skills Demo — Watch on Bilibili" width="720" style="max-width:100%; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.15);" />
