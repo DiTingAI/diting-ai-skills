@@ -5,7 +5,7 @@
 [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey.svg)]()
 [![GitHub Stars](https://img.shields.io/github/stars/diting-ai/diting-skills?style=social)]()
 [![Downloads](https://img.shields.io/github/downloads/diting-ai/diting-skills/total)]()
-[![GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://diting-ai.github.io/diting-ai-skills/)
+[![GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://ditingai.github.io/diting-ai-skills/)
 
 **Convert videos to text in seconds with AI. Supports Bilibili links, local files, and knowledge base search. Perfect for AI assistants like XiaoLongXia, Cursor, Claude, and Codex.**
 
