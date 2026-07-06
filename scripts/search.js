@@ -7,29 +7,24 @@ const {
   requestJSON
 } = require('./shared');
 
+/**
+ * 知识库搜索 / 问答
+ * 接口: POST /api/v1/search ✅ 存在
+ */
 async function searchKnowledgeBase(options = {}) {
   const config = getConfig(options);
-  const query = options.query;
+  const query = options.query || options.question;
 
   if (!query) {
-    throw new Error('缺少 --query 参数');
+    throw new Error('缺少 --query 或 --question 参数');
   }
 
+  // 根据API文档，参数为: question, top_k, stream
   const payload = {
-    query: String(query),
+    question: String(query),
     top_k: parseInt(options['top-k'] || '5', 10),
-    search_type: options['search-type'] || 'hybrid'
+    stream: false
   };
-
-  if (options['created-after']) {
-    payload.filters = payload.filters || {};
-    payload.filters.created_after = options['created-after'];
-  }
-
-  if (options.tags) {
-    payload.filters = payload.filters || {};
-    payload.filters.tags = options.tags.split(',').map(t => t.trim());
-  }
 
   const response = await requestJSON({
     baseURL: config.baseURL,
@@ -42,11 +37,16 @@ async function searchKnowledgeBase(options = {}) {
   return {
     success: response.code === 0,
     request: payload,
-    total: response.data?.total || 0,
-    results: response.data?.results || []
+    answer: response.data?.answer || response.answer || '',
+    sources: response.data?.sources || response.sources || [],
+    total_tokens: response.data?.total_tokens || response.total_tokens || 0
   };
 }
 
+/**
+ * 查询视频列表
+ * 接口: GET /api/v1/videos ✅ 存在
+ */
 async function queryVideoList(options = {}) {
   const config = getConfig(options);
 
@@ -72,6 +72,10 @@ async function queryVideoList(options = {}) {
   };
 }
 
+/**
+ * 获取 API Key 列表
+ * 接口: GET /api/v1/apikeys ✅ 存在
+ */
 async function getApiKeys(options = {}) {
   const config = getConfig(options);
 
@@ -88,15 +92,32 @@ async function getApiKeys(options = {}) {
   };
 }
 
+/**
+ * 创建 API Key
+ * 接口: POST /api/v1/apikeys ✅ 存在
+ */
 async function createApiKey(options = {}) {
   const config = getConfig(options);
+
+  // 根据API文档，参数为: name, scopes, expires_in_days
+  const payload = {
+    name: options.name || 'CLI Generated'
+  };
+
+  if (options.scopes) {
+    payload.scopes = options.scopes.split(',').map(s => s.trim());
+  }
+
+  if (options['expires-in-days']) {
+    payload.expires_in_days = parseInt(options['expires-in-days'], 10);
+  }
 
   const response = await requestJSON({
     baseURL: config.baseURL,
     token: config.token,
     method: 'POST',
     apiPath: '/api/v1/apikeys',
-    body: { name: options.name || 'CLI Generated' }
+    body: payload
   });
 
   return {
@@ -105,6 +126,10 @@ async function createApiKey(options = {}) {
   };
 }
 
+/**
+ * 删除 API Key
+ * 接口: DELETE /api/v1/apikeys/{keyId} ✅ 存在
+ */
 async function deleteApiKey(options = {}) {
   const config = getConfig(options);
   const keyId = options['key-id'];

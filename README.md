@@ -1,7 +1,7 @@
 # Diting AI Skills - AI-Powered Video Transcription CLI Tool
 
 [![License: MIT-0](https://img.shields.io/badge/License-MIT--0-blue.svg)](https://opensource.org/licenses/MIT-0)
-[![Version](https://img.shields.io/badge/version-1.0.1-green.svg)]()
+[![Version](https://img.shields.io/badge/version-1.0.2-green.svg)]()
 [![Platform](https://img.shields.io/badge/platform-macOS%20%7C%20Linux%20%7C%20Windows-lightgrey.svg)]()
 [![GitHub Stars](https://img.shields.io/github/stars/diting-ai/diting-skills?style=social)]()
 [![Downloads](https://img.shields.io/github/downloads/diting-ai/diting-skills/total)]()
@@ -79,11 +79,11 @@ curl -sSL https://raw.githubusercontent.com/diting-ai/diting-skills/main/install
 ### Method 2: Manual Installation
 ```bash
 # Download from OSS
-wget https://oss.diting.cc/assets/diting-skills-1.0.1.zip
+wget https://oss.diting.cc/assets/diting-skills-1.0.2.zip
 
 # Extract
-unzip diting-skills-1.0.1.zip
-cd diting-skills-1.0.1
+unzip diting-skills-1.0.2.zip
+cd diting-skills-1.0.2
 
 # Use binary version
 chmod +x dist/diting
@@ -152,7 +152,7 @@ diting asset-read --task-id tsk_20260703_xxxxxxxx --type mindmap
 ### XiaoLongXia Assistant
 Send this prompt to XiaoLongXia:
 ```
-请安装谛听 AI Skills 功能，下载地址：https://oss.diting.cc/assets/diting-skills-1.0.1.zip，并发送给小龙虾、Cursor、Claude、Codex 等主流 Agent，按提示即可自动安装。
+请安装谛听 AI Skills 功能，下载地址：https://oss.diting.cc/assets/diting-skills-1.0.2.zip，并发送给小龙虾、Cursor、Claude、Codex 等主流 Agent，按提示即可自动安装。
 
 在页面最上方点击「获取 API Key」，完成后把生成的 Key 发给小龙虾，即可完成鉴权并开始使用。
 ```
@@ -332,7 +332,7 @@ Options:
 ## 🌐 Download Links
 
 ### Primary Download
-- **Main Package**: https://oss.diting.cc/assets/diting-skills-1.0.1.zip
+- **Main Package**: https://oss.diting.cc/assets/diting-skills-1.0.2.zip
 
 ### Alternative Sources
 - **GitHub Releases**: https://github.com/diting-ai/diting-skills/releases
@@ -374,7 +374,7 @@ This project is licensed under the **MIT No Attribution (MIT-0)** License - see 
 
 ## 📊 Version Information
 
-**Current Version**: v1.0.1  
+**Current Version**: v1.0.2  
 **Release Date**: 2026-07-06  
 **Changelog**: See [CHANGELOG.md](CHANGELOG.md)
 
@@ -392,7 +392,7 @@ This project is licensed under the **MIT No Attribution (MIT-0)** License - see 
 复制以下提示词发送给小龙虾助手：
 
 ```
-请安装谛听 AI Skills 功能，下载地址：https://oss.diting.cc/assets/diting-skills-1.0.1.zip，并发送给小龙虾、Cursor、Claude、Codex 等主流 Agent，按提示即可自动安装。
+请安装谛听 AI Skills 功能，下载地址：https://oss.diting.cc/assets/diting-skills-1.0.2.zip，并发送给小龙虾、Cursor、Claude、Codex 等主流 Agent，按提示即可自动安装。
 
 在页面最上方点击「获取 API Key」，完成后把生成的 Key 发给小龙虾，即可完成鉴权并开始使用。
 ```
@@ -411,13 +411,13 @@ wget -q -O- https://raw.githubusercontent.com/diting-ai/diting-skills/main/insta
 
 ```bash
 # 1. 下载安装包
-wget https://oss.diting.cc/assets/diting-skills-1.0.1.zip
+wget https://oss.diting.cc/assets/diting-skills-1.0.2.zip
 
 # 2. 解压
-unzip diting-skills-1.0.1.zip
+unzip diting-skills-1.0.2.zip
 
 # 3. 进入目录
-cd diting-skills-1.0.1
+cd diting-skills-1.0.2
 
 # 4. 使用二进制版本（推荐）
 chmod +x dist/diting-*
@@ -612,10 +612,10 @@ Commands:
 ## 🌐 下载地址
 
 ### 主安装包
-- https://oss.diting.cc/assets/diting-skills-1.0.1.zip
+- https://oss.diting.cc/assets/diting-skills-1.0.2.zip
 
 ### 备用地址
-- https://github.com/diting-ai/diting-skills/releases/download/v1.0.1/diting-skills-1.0.1.zip
+- https://github.com/diting-ai/diting-skills/releases/download/v1.0.2/diting-skills-1.0.2.zip
 
 ### 安装脚本
 - https://raw.githubusercontent.com/diting-ai/diting-skills/main/install.sh
@@ -692,7 +692,7 @@ ls references/
 
 ## 📊 版本信息
 
-**当前版本**: v1.0.1  
+**当前版本**: v1.0.2  
 **发布日期**: 2026-07-05  
 **更新内容**:
 - ✅ 完整的小龙虾助手集成支持

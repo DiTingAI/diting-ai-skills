@@ -2,6 +2,8 @@
 
 Get started with Diting AI Skills in 5 minutes!
 
+> **v1.0.2 更新**: 上线前已完成 Code Review，移除了所有不存在的 API 接口。详情见 [API 更新日志](../api/API_CHANGELOG.md)
+
 ## 🎯 What is Diting AI Skills?
 
 Diting AI Skills is a powerful CLI tool that allows you to:

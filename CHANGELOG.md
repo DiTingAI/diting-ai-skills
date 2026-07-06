@@ -2,6 +2,62 @@
 
 所有项目的显著变更都将记录在此文件中。
 
+## [1.0.2] - 2026-07-06
+
+### 已修复 - API接口对齐
+
+**上线前 Code Review，移除不存在的API接口，确保发布后无BUG**
+
+#### update_record.js
+- ❌ 移除 `POST /api/record/update`（不存在）
+- ❌ 移除 `POST /api/record/retry`（不存在）→ ✅ 改用 `POST /api/v1/videos/{id}/retry`
+- ❌ 移除 `POST /api/record/delete`（不存在）→ ✅ 改用 `DELETE /api/v1/videos/{task_id}`
+- ❌ 移除 `PUT /api/v1/videos/{id}/tags`（不存在）
+- ❌ 移除 `PUT /api/v1/videos/{id}/folder`（不存在）
+
+#### asset_read.js
+- ❌ 移除 `GET /api/v1/videos/{id}/transcript`（不存在）→ ✅ 改用 `GET /api/v1/videos/{task_id}` 的 `originalTranscript` 字段
+- ❌ 移除 `GET /api/v1/videos/{id}/summary`（不存在）→ ✅ 改用 `GET /api/v1/videos/{task_id}` 的 `brief_summary` / `detailed_summary` 字段
+- ❌ 移除 `GET /api/v1/videos/{id}/outline`（不存在）→ ✅ 改用 `GET /api/v1/videos/{task_id}` 的 `aiOutline` 字段
+- ❌ 移除 `GET /api/v1/videos/{id}/mindmap`（不存在）→ ✅ 改用 `GET /api/v1/videos/{task_id}` 的 `mindmap` 字段
+- ❌ 移除 `GET /api/v1/videos/{id}/qa`（不存在）→ ✅ 改用 `GET /api/v1/videos/{task_id}` 的 `qaPairs` 字段
+- ❌ 移除 `GET /api/v1/videos/{id}/polish`（不存在）→ ✅ 改用 `GET /api/v1/videos/{task_id}` 的 `polishedTranscript` 字段
+- ❌ 移除 `GET /api/v1/videos/{id}/chapters`（不存在）→ ✅ 改用 `GET /api/v1/videos/{task_id}` 的 `aiOutline` 字段
+
+#### transcribe.js
+- ❌ 移除 `POST /api/record/create`（不存在）
+- ❌ 移除 `POST /api/v1/videos/outline`（不存在）→ 数据通过 `GET /api/v1/videos/{task_id}` 获取
+- ❌ 移除 `POST /api/v1/videos/qa`（不存在）→ 数据通过 `GET /api/v1/videos/{task_id}` 获取
+- ❌ 移除 `POST /api/v1/videos/mindmap`（不存在）→ 数据通过 `GET /api/v1/videos/{task_id}` 获取
+- ❌ 移除 `POST /api/v1/videos/mindmap/regenerate`（不存在）
+- ❌ 移除 `POST /api/v1/videos/polish`（不存在）→ 数据通过 `GET /api/v1/videos/{task_id}` 获取
+
+#### upload.js
+- ❌ 修正 `/tingwu/tasks` → ✅ `/api/v1/tingwu/tasks`
+- ❌ 修正 `/tingwu/transcription` → ✅ `/api/v1/tingwu/transcription`
+
+#### search.js
+- ✅ 修正搜索参数 `query` → `question`（符合API文档规范）
+
+### 保留的有效接口
+- `POST /api/v1/videos/bilibili/check`
+- `POST /api/v1/videos/bilibili/process`
+- `GET /api/v1/videos/{task_id}/status`
+- `GET /api/v1/videos/{task_id}`
+- `POST /api/v1/videos/summary`
+- `POST /api/v1/videos/{video_id}/retry`
+- `GET /api/v1/videos`
+- `DELETE /api/v1/videos/{task_id}`
+- `GET /v1/assets/{asset_id}`
+- `POST /api/v1/search`
+- `GET /api/v1/apikeys`
+- `POST /api/v1/apikeys`
+- `DELETE /api/v1/apikeys/{keyId}`
+- `POST /api/v1/tingwu/tasks`
+- `POST /api/v1/tingwu/tasks/submit-and-wait`
+- `GET /api/v1/tingwu/tasks/status`
+- `GET /api/v1/tingwu/transcription`
+
 ## [1.0.1] - 2026-07-05
 
 ### 已修复

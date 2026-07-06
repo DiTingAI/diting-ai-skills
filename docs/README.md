@@ -21,6 +21,7 @@ Welcome to the official documentation for Diting AI Skills!
 - [API Endpoints](api/endpoints.md) - HTTP API documentation
 - [Error Codes](api/error-codes.md) - Error code reference
 - [Configuration](api/configuration.md) - Configuration options
+- [API Changelog](api/API_CHANGELOG.md) - API 接口变更日志（v1.0.2）
 
 ### 🤖 AI Assistant Guides
 - [XiaoLongXia Integration](guides/xiaolongxia.md) - Integration with XiaoLongXia assistant

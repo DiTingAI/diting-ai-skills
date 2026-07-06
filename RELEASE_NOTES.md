@@ -1,10 +1,10 @@
 # 谛听 AI Skills 发布包
 
 ## 📦 版本信息
-- **版本**: v1.0.1
-- **发布日期**: 2026-07-05
+- **版本**: v1.0.2
+- **发布日期**: 2026-07-06
 - **文件大小**: 15.73 MB
-- **文件**: `diting-skills-v1.0.1-skill.zip`
+- **文件**: `diting-skills-v1.0.2-skill.zip`
 
 ## 📁 压缩包内容
 
@@ -109,6 +109,16 @@ cp .env.example .env
 - **依赖**: 无需额外依赖（二进制版本完全独立）
 
 ## 🔄 更新日志
+
+### v1.0.2 (2026-07-06)
+- ✅ **Code Review 完成**: 移除所有不存在的 API 接口
+- ✅ `update_record.js`: 移除 `/api/record/*` 接口，改用 `/api/v1/videos/*` 标准接口
+- ✅ `asset_read.js`: 统一通过 `GET /api/v1/videos/{task_id}` 读取数据
+- ✅ `transcribe.js`: 移除未公开的 AI 功能接口（outline/qa/mindmap/polish）
+- ✅ `upload.js`: 修正听悟接口路径（添加 `/api/v1` 前缀）
+- ✅ `search.js`: 修正搜索参数（`query` → `question`）
+- ✅ `bin/diting.js`: 更新帮助文档，移除已废弃功能
+- ✅ 添加 [API 更新日志](docs/api/API_CHANGELOG.md)
 
 ### v1.0.1 (2026-07-05)
 - ✅ 修复版本号不一致问题

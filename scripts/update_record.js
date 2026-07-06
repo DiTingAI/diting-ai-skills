@@ -7,7 +7,11 @@ const {
   requestJSON
 } = require('./shared');
 
-async function updateRecord(options = {}) {
+/**
+ * 删除视频
+ * 接口: DELETE /api/v1/videos/{task_id} ✅ 存在
+ */
+async function deleteRecord(options = {}) {
   const config = getConfig(options);
   const recordId = options.id;
 
@@ -15,46 +19,24 @@ async function updateRecord(options = {}) {
     throw new Error('缺少 --id 参数');
   }
 
-  const payload = {};
-
-  if (options.title !== undefined) {
-    payload.title = String(options.title);
-  }
-
-  if (options['folder-id'] !== undefined) {
-    payload.folder_id = String(options['folder-id']);
-  }
-
-  if (options['folder-name'] !== undefined) {
-    payload.folder_name = String(options['folder-name']);
-  }
-
-  if (options.tag !== undefined) {
-    payload.tag = String(options.tag);
-  }
-
-  if (Object.keys(payload).length === 0) {
-    throw new Error('至少需要指定一个更新字段: --title, --folder-id, --folder-name, --tag');
-  }
-
   const response = await requestJSON({
     baseURL: config.baseURL,
     token: config.token,
-    method: 'POST',
-    apiPath: '/api/record/update',
-    body: {
-      id: recordId,
-      ...payload
-    }
+    method: 'DELETE',
+    apiPath: `/api/v1/videos/${recordId}`
   });
 
   return {
     success: response.code === 200,
-    request: { id: recordId, ...payload },
+    request: { id: recordId },
     response
   };
 }
 
+/**
+ * 重试视频处理
+ * 接口: POST /api/v1/videos/{video_id}/retry ✅ 存在
+ */
 async function retryRecord(options = {}) {
   const config = getConfig(options);
   const recordId = options.id;
@@ -67,154 +49,12 @@ async function retryRecord(options = {}) {
     baseURL: config.baseURL,
     token: config.token,
     method: 'POST',
-    apiPath: '/api/record/retry',
-    body: { id: recordId }
+    apiPath: `/api/v1/videos/${recordId}/retry`
   });
 
   return {
     success: response.code === 200,
     request: { id: recordId },
-    response
-  };
-}
-
-async function deleteRecord(options = {}) {
-  const config = getConfig(options);
-  const recordId = options.id;
-
-  if (!recordId) {
-    throw new Error('缺少 --id 参数');
-  }
-
-  const response = await requestJSON({
-    baseURL: config.baseURL,
-    token: config.token,
-    method: 'POST',
-    apiPath: '/api/record/delete',
-    body: { id: recordId }
-  });
-
-  return {
-    success: response.code === 200,
-    request: { id: recordId },
-    response
-  };
-}
-
-async function renameRecord(options = {}) {
-  const config = getConfig(options);
-  const recordId = options.id;
-  const title = options.title;
-
-  if (!recordId) {
-    throw new Error('缺少 --id 参数');
-  }
-
-  if (!title) {
-    throw new Error('缺少 --title 参数');
-  }
-
-  const response = await requestJSON({
-    baseURL: config.baseURL,
-    token: config.token,
-    method: 'POST',
-    apiPath: '/api/record/update',
-    body: {
-      id: recordId,
-      title: String(title)
-    }
-  });
-
-  return {
-    success: response.code === 200,
-    request: { id: recordId, title: String(title) },
-    response
-  };
-}
-
-async function moveRecord(options = {}) {
-  const config = getConfig(options);
-  const recordId = options.id;
-  const folderId = options['folder-id'];
-
-  if (!recordId) {
-    throw new Error('缺少 --id 参数');
-  }
-
-  if (!folderId) {
-    throw new Error('缺少 --folder-id 参数');
-  }
-
-  const response = await requestJSON({
-    baseURL: config.baseURL,
-    token: config.token,
-    method: 'POST',
-    apiPath: '/api/record/update',
-    body: {
-      id: recordId,
-      folder_id: String(folderId)
-    }
-  });
-
-  return {
-    success: response.code === 200,
-    request: { id: recordId, folder_id: String(folderId) },
-    response
-  };
-}
-
-async function updateVideoTags(options = {}) {
-  const config = getConfig(options);
-  const videoId = options['video-id'];
-  const tags = options.tags;
-
-  if (!videoId) {
-    throw new Error('缺少 --video-id 参数');
-  }
-
-  if (!tags) {
-    throw new Error('缺少 --tags 参数');
-  }
-
-  const response = await requestJSON({
-    baseURL: config.baseURL,
-    token: config.token,
-    method: 'PUT',
-    apiPath: `/api/v1/videos/${videoId}/tags`,
-    body: { tags: tags.split(',') }
-  });
-
-  return {
-    success: response.code === 200,
-    request: { video_id: videoId, tags },
-    response
-  };
-}
-
-async function updateVideoFolder(options = {}) {
-  const config = getConfig(options);
-  const videoId = options['video-id'];
-  const folderId = options['folder-id'];
-
-  if (!videoId) {
-    throw new Error('缺少 --video-id 参数');
-  }
-
-  if (!folderId) {
-    throw new Error('缺少 --folder-id 参数');
-  }
-
-  const response = await requestJSON({
-    baseURL: config.baseURL,
-    token: config.token,
-    method: 'PUT',
-    apiPath: `/api/v1/videos/${videoId}/folder`,
-    body: { folder_id: folderId }
-  });
-
-  return {
-    success: response.code === 200,
-    request: { video_id: videoId, folder_id: folderId },
     response
   };
 }
@@ -234,32 +74,24 @@ async function main() {
     return;
   }
 
-  if (args.rename) {
-    const result = await renameRecord(args);
-    console.log(formatJson(result));
-    return;
-  }
-
-  if (args.move) {
-    const result = await moveRecord(args);
-    console.log(formatJson(result));
-    return;
-  }
-
-  if (args['update-tags']) {
-    const result = await updateVideoTags(args);
-    console.log(formatJson(result));
-    return;
-  }
-
-  if (args['update-folder']) {
-    const result = await updateVideoFolder(args);
-    console.log(formatJson(result));
-    return;
-  }
-
-  const result = await updateRecord(args);
-  console.log(formatJson(result));
+  // 以下功能对应的API接口不存在，已移除：
+  // - 更新视频记录: POST /api/record/update ❌
+  // - 重命名视频: POST /api/record/update ❌
+  // - 移动视频到文件夹: POST /api/record/update ❌
+  // - 更新视频标签: PUT /api/v1/videos/{videoId}/tags ❌
+  // - 更新视频文件夹: PUT /api/v1/videos/{videoId}/folder ❌
+  // 请使用网页版 diting.cc 进行这些操作。
+  console.error('错误: 该脚本的以下功能对应的API接口不存在:');
+  console.error('  - 更新视频记录 (update)');
+  console.error('  - 重命名视频 (rename)');
+  console.error('  - 移动视频到文件夹 (move)');
+  console.error('  - 更新视频标签 (update-tags)');
+  console.error('  - 更新视频文件夹 (update-folder)');
+  console.error('\n请使用网页版 diting.cc 进行这些操作。');
+  console.error('\n可用的功能:');
+  console.error('  --retry --id <id>     重试视频处理');
+  console.error('  --delete --id <id>    删除视频');
+  process.exit(1);
 }
 
 if (require.main === module) {
@@ -270,11 +102,6 @@ if (require.main === module) {
 }
 
 module.exports = {
-  updateRecord,
-  retryRecord,
   deleteRecord,
-  renameRecord,
-  moveRecord,
-  updateVideoTags,
-  updateVideoFolder
+  retryRecord
 };

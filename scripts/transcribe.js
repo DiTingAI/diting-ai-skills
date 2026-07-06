@@ -2,15 +2,16 @@
 
 const path = require('path');
 const {
-  extractBilibiliUrl,
   formatJson,
   getConfig,
-  isValidBilibiliUrl,
-  normalizeStyle,
   parseArgs,
   requestJSON
 } = require('./shared');
 
+/**
+ * 检查 B 站视频信息
+ * 接口: POST /api/v1/videos/bilibili/check ✅ 存在
+ */
 async function checkBilibiliVideo(url, config) {
   const response = await requestJSON({
     baseURL: config.baseURL,
@@ -23,6 +24,10 @@ async function checkBilibiliVideo(url, config) {
   return response.data || response;
 }
 
+/**
+ * 提交 B 站视频处理任务
+ * 接口: POST /api/v1/videos/bilibili/process ✅ 存在
+ */
 async function submitProcessTask(videos, config) {
   const response = await requestJSON({
     baseURL: config.baseURL,
@@ -35,6 +40,10 @@ async function submitProcessTask(videos, config) {
   return response.data || response;
 }
 
+/**
+ * 查询任务状态
+ * 接口: GET /api/v1/videos/{task_id}/status ✅ 存在
+ */
 async function getTaskStatus(taskId, config) {
   const response = await requestJSON({
     baseURL: config.baseURL,
@@ -46,6 +55,10 @@ async function getTaskStatus(taskId, config) {
   return response.data || response;
 }
 
+/**
+ * 获取视频详情（处理结果）
+ * 接口: GET /api/v1/videos/{task_id} ✅ 存在
+ */
 async function getVideoResult(taskId, config) {
   const response = await requestJSON({
     baseURL: config.baseURL,
@@ -57,6 +70,10 @@ async function getVideoResult(taskId, config) {
   return response.data || response;
 }
 
+/**
+ * 生成视频摘要
+ * 接口: POST /api/v1/videos/summary ✅ 存在
+ */
 async function generateSummary(taskId, config) {
   const response = await requestJSON({
     baseURL: config.baseURL,
@@ -70,71 +87,18 @@ async function generateSummary(taskId, config) {
   return response.data || response;
 }
 
-async function generateOutline(taskId, config) {
-  const response = await requestJSON({
-    baseURL: config.baseURL,
-    token: config.token,
-    method: 'POST',
-    apiPath: '/api/v1/videos/outline',
-    body: { task_id: taskId },
-    extraHeaders: { 'timeout': '600000' }
-  });
+// 以下AI功能接口在API文档中未提及，已移除：
+// - POST /api/v1/videos/outline ❌ 不存在
+// - POST /api/v1/videos/qa ❌ 不存在
+// - POST /api/v1/videos/mindmap ❌ 不存在
+// - POST /api/v1/videos/mindmap/regenerate ❌ 不存在
+// - POST /api/v1/videos/polish ❌ 不存在
+// 这些功能的数据通过 GET /api/v1/videos/{task_id} 接口获取。
 
-  return response.data || response;
-}
-
-async function generateQA(taskId, question, config) {
-  const response = await requestJSON({
-    baseURL: config.baseURL,
-    token: config.token,
-    method: 'POST',
-    apiPath: '/api/v1/videos/qa',
-    body: { task_id: taskId, question },
-    extraHeaders: { 'timeout': '600000' }
-  });
-
-  return response.data || response;
-}
-
-async function generateMindmap(taskId, config) {
-  const response = await requestJSON({
-    baseURL: config.baseURL,
-    token: config.token,
-    method: 'POST',
-    apiPath: '/api/v1/videos/mindmap',
-    body: { task_id: taskId },
-    extraHeaders: { 'timeout': '600000' }
-  });
-
-  return response.data || response;
-}
-
-async function regenerateMindmap(taskId, config) {
-  const response = await requestJSON({
-    baseURL: config.baseURL,
-    token: config.token,
-    method: 'POST',
-    apiPath: '/api/v1/videos/mindmap/regenerate',
-    body: { task_id: taskId },
-    extraHeaders: { 'timeout': '600000' }
-  });
-
-  return response.data || response;
-}
-
-async function polishVideo(taskId, config) {
-  const response = await requestJSON({
-    baseURL: config.baseURL,
-    token: config.token,
-    method: 'POST',
-    apiPath: '/api/v1/videos/polish',
-    body: { task_id: taskId },
-    extraHeaders: { 'timeout': '600000' }
-  });
-
-  return response.data || response;
-}
-
+/**
+ * 重试视频处理
+ * 接口: POST /api/v1/videos/{video_id}/retry ✅ 存在
+ */
 async function retryVideo(videoId, config) {
   const response = await requestJSON({
     baseURL: config.baseURL,
@@ -146,6 +110,10 @@ async function retryVideo(videoId, config) {
   return response.data || response;
 }
 
+/**
+ * 查询视频列表
+ * 接口: GET /api/v1/videos ✅ 存在
+ */
 async function queryVideoList(config, options = {}) {
   const response = await requestJSON({
     baseURL: config.baseURL,
@@ -165,6 +133,10 @@ async function queryVideoList(config, options = {}) {
   return response.data || response;
 }
 
+/**
+ * 删除视频
+ * 接口: DELETE /api/v1/videos/{task_id} ✅ 存在
+ */
 async function deleteVideo(videoId, config) {
   const response = await requestJSON({
     baseURL: config.baseURL,
@@ -174,6 +146,48 @@ async function deleteVideo(videoId, config) {
   });
 
   return response.data || response;
+}
+
+function extractBilibiliUrl(url) {
+  if (!url) return null;
+
+  const bvidMatch = url.match(/BV[a-zA-Z0-9]+/);
+  if (bvidMatch) {
+    return `https://www.bilibili.com/video/${bvidMatch[0]}`;
+  }
+
+  const avMatch = url.match(/av(\d+)/i);
+  if (avMatch) {
+    return `https://www.bilibili.com/video/av${avMatch[1]}`;
+  }
+
+  if (url.includes('bilibili.com/video/')) {
+    return url.split('?')[0];
+  }
+
+  return null;
+}
+
+function isValidBilibiliUrl(url) {
+  return url && (
+    url.includes('bilibili.com/video/BV') ||
+    url.includes('bilibili.com/video/av')
+  );
+}
+
+function normalizeStyle(style, fileName) {
+  if (style) {
+    return style.toLowerCase();
+  }
+
+  const ext = path.extname(fileName).toLowerCase().slice(1);
+  if (['mp3', 'wav', 'm4a', 'aac', 'flac', 'ogg', 'amr'].includes(ext)) {
+    return 'audio';
+  }
+  if (['mp4', 'mov', 'm4v', 'avi', 'mkv', 'webm'].includes(ext)) {
+    return 'video';
+  }
+  return null;
 }
 
 async function transcribe(options = {}) {
@@ -209,12 +223,7 @@ async function transcribe(options = {}) {
             url: part.url,
             thumbnail: part.thumbnail || videoInfo.thumbnail || '',
             title: part.title || videoInfo.title || '',
-            duration: part.duration || videoInfo.duration || '0:00',
-            cid: part.cid,
-            aid: part.aid,
-            season_id: videoInfo.season_id || 0,
-            total_pages: parts.length,
-            pubdate: part.pubdate || 0
+            duration: part.duration || videoInfo.duration || '0:00'
           });
         }
       } else {
@@ -225,12 +234,7 @@ async function transcribe(options = {}) {
           url: selected.url,
           thumbnail: selected.thumbnail || videoInfo.thumbnail || '',
           title: selected.title || videoInfo.title || '',
-          duration: selected.duration || videoInfo.duration || '0:00',
-          cid: selected.cid,
-          aid: selected.aid,
-          season_id: videoInfo.season_id || 0,
-          total_pages: 1,
-          pubdate: selected.pubdate || 0
+          duration: selected.duration || videoInfo.duration || '0:00'
         });
       }
     } else {
@@ -238,9 +242,7 @@ async function transcribe(options = {}) {
         url: extractedUrl,
         thumbnail: videoInfo.thumbnail || '',
         title: videoInfo.title || '',
-        duration: videoInfo.duration || '0:00',
-        cid: videoInfo.cid,
-        aid: videoInfo.aid
+        duration: videoInfo.duration || '0:00'
       });
     }
 
@@ -263,43 +265,9 @@ async function transcribe(options = {}) {
   }
 
   if (uploadId) {
-    const fileName = options.name || path.basename(uploadId);
-    const style = normalizeStyle(options.style, fileName);
-
-    if (!style) {
-      throw new Error('无法识别文件类型，请通过 --style audio|video 指定');
-    }
-
-    const payload = {
-      source: 'upload',
-      upload_id: uploadId,
-      options: {
-        language: options.language || 'zh',
-        enable_summary: options['enable-summary'] !== false,
-        enable_mindmap: options['enable-mindmap'] !== false,
-        priority: Number(options.priority || 0)
-      },
-      callback_url: options['callback-url']
-    };
-
-    const response = await requestJSON({
-      baseURL: config.baseURL,
-      token: config.token,
-      method: 'POST',
-      apiPath: '/api/record/create',
-      body: payload
-    });
-
-    const recordId = Array.isArray(response.data)
-      ? response.data[0] && response.data[0].id
-      : response.data && response.data.id;
-
-    return {
-      success: response.code === 200,
-      recordId: recordId || null,
-      request: payload,
-      response
-    };
+    // ❌ /api/record/create 接口不存在
+    // 本地上传功能暂不可用，请使用听悟接口处理音频文件
+    throw new Error('本地上传功能暂不可用。请使用听悟接口处理音频文件：\n  node scripts/upload.js --tingwu --file-url <音频URL>');
   }
 }
 
@@ -359,35 +327,9 @@ async function main() {
     return;
   }
 
-  if (args['task-id'] && args.outline) {
-    const result = await generateOutline(args['task-id'], config);
-    console.log(formatJson(result));
-    return;
-  }
-
-  if (args['task-id'] && args.qa) {
-    const result = await generateQA(args['task-id'], args.qa, config);
-    console.log(formatJson(result));
-    return;
-  }
-
-  if (args['task-id'] && args.mindmap) {
-    const result = await generateMindmap(args['task-id'], config);
-    console.log(formatJson(result));
-    return;
-  }
-
-  if (args['task-id'] && args['regenerate-mindmap']) {
-    const result = await regenerateMindmap(args['task-id'], config);
-    console.log(formatJson(result));
-    return;
-  }
-
-  if (args['task-id'] && args.polish) {
-    const result = await polishVideo(args['task-id'], config);
-    console.log(formatJson(result));
-    return;
-  }
+  // 以下AI功能接口在API文档中未提及，已禁用：
+  // --outline, --qa, --mindmap, --regenerate-mindmap, --polish
+  // 这些数据请通过 GET /api/v1/videos/{task_id} 获取。
 
   if (args['video-id'] && args.retry) {
     const result = await retryVideo(args['video-id'], config);
@@ -429,11 +371,6 @@ module.exports = {
   transcribe,
   pollTask,
   generateSummary,
-  generateOutline,
-  generateQA,
-  generateMindmap,
-  regenerateMindmap,
-  polishVideo,
   retryVideo,
   queryVideoList,
   deleteVideo

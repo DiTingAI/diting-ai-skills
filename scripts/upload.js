@@ -7,12 +7,16 @@ const {
   requestJSON
 } = require('./shared');
 
+/**
+ * 提交听悟任务
+ * 接口: POST /api/v1/tingwu/tasks ✅ 存在
+ */
 async function tingwuSubmitFileTask(config, params) {
   const response = await requestJSON({
     baseURL: config.baseURL,
     token: config.token,
     method: 'POST',
-    apiPath: '/tingwu/tasks',
+    apiPath: '/api/v1/tingwu/tasks',
     body: {
       source_language: params.source_language || 'cn',
       file_url: params.file_url,
@@ -34,6 +38,10 @@ async function tingwuSubmitFileTask(config, params) {
   return response.data || response;
 }
 
+/**
+ * 提交并等待听悟任务
+ * 接口: POST /api/v1/tingwu/tasks/submit-and-wait ✅ 存在
+ */
 async function tingwuSubmitAndWait(config, params) {
   const response = await requestJSON({
     baseURL: config.baseURL,
@@ -61,6 +69,10 @@ async function tingwuSubmitAndWait(config, params) {
   return response.data || response;
 }
 
+/**
+ * 查询听悟任务状态
+ * 接口: GET /api/v1/tingwu/tasks/status?task_id=<task_id> ✅ 存在
+ */
 async function tingwuGetTaskStatus(config, taskId) {
   const response = await requestJSON({
     baseURL: config.baseURL,
@@ -73,12 +85,16 @@ async function tingwuGetTaskStatus(config, taskId) {
   return response.data || response;
 }
 
+/**
+ * 获取听悟转写结果
+ * 接口: GET /api/v1/tingwu/transcription?url=<result_url> ✅ 存在
+ */
 async function tingwuGetTranscription(config, url) {
   const response = await requestJSON({
     baseURL: config.baseURL,
     token: config.token,
     method: 'GET',
-    apiPath: '/tingwu/transcription',
+    apiPath: '/api/v1/tingwu/transcription',
     query: { url }
   });
 

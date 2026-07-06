@@ -1,38 +1,50 @@
 #!/usr/bin/env node
 
 const { formatJson, parseArgs } = require('../scripts/shared');
-const { uploadMedia } = require('../scripts/upload');
-const { transcribe, pollTask, generateSummary, generateOutline, generateQA, generateMindmap, regenerateMindmap, polishVideo, retryVideo, queryVideoList, deleteVideo } = require('../scripts/transcribe');
-const { assetRead, getVideoTranscript, getVideoSummary, getVideoOutline, getVideoMindmap, getVideoQA, getVideoPolish, getVideoChapters, queryRecordList, getRecordDetail } = require('../scripts/asset_read');
+const { tingwuSubmitAndWait, tingwuSubmitFileTask, tingwuGetTaskStatus, tingwuGetTranscription } = require('../scripts/upload');
+const { transcribe, pollTask, generateSummary, retryVideo, queryVideoList, deleteVideo } = require('../scripts/transcribe');
+const { assetRead, getVideoTranscript, getVideoSummary, getVideoOutline, getVideoMindmap, getVideoQA, getVideoPolish, getVideoChapters } = require('../scripts/asset_read');
 const { search, queryVideoList: searchQueryVideoList, getApiKeys, createApiKey, deleteApiKey } = require('../scripts/search');
-const { updateRecord, retryRecord, deleteRecord, renameRecord, moveRecord, updateVideoTags, updateVideoFolder } = require('../scripts/update_record');
+const { retryRecord, deleteRecord } = require('../scripts/update_record');
 
 const command = process.argv[2];
 const args = parseArgs(process.argv.slice(3));
 
 const commandMap = {
-  upload: uploadMedia,
+  upload: async (opts) => {
+    // upload 现在仅支持 tingwu 模式
+    const fileUrl = opts['file-url'];
+    if (!fileUrl) {
+      throw new Error('缺少 --file-url 参数（需要提供可访问的音频文件URL）');
+    }
+    const config = require('../scripts/shared').getConfig(opts);
+    const tingwuParams = {
+      source_language: opts['source-language'] || 'cn',
+      file_url: fileUrl,
+      task_key: opts['task-key'] || `task_${Date.now()}`,
+      format: opts.format || 'mp3',
+      sample_rate: opts['sample-rate'] || 16000,
+      enable_transcription: opts['enable-transcription'] !== false,
+      enable_diarization: opts['enable-diarization'] || false,
+      speaker_count: opts['speaker-count'] || 2,
+      enable_translation: opts['enable-translation'] || false,
+      target_languages: opts['target-languages'] ? opts['target-languages'].split(',') : [],
+      enable_auto_chapters: opts['enable-auto-chapters'] || false,
+      enable_summarization: opts['enable-summarization'] || false,
+      summarization_types: opts['summarization-types'] ? opts['summarization-types'].split(',') : [],
+      enable_text_polish: opts['enable-text-polish'] || false
+    };
+    if (opts['submit-and-wait']) {
+      return tingwuSubmitAndWait(config, tingwuParams);
+    }
+    return tingwuSubmitFileTask(config, tingwuParams);
+  },
   transcribe: async (opts) => {
     if (opts['task-id'] && opts.poll) {
       return pollTask(opts);
     }
     if (opts['task-id'] && opts.summary) {
       return generateSummary(opts['task-id'], require('../scripts/shared').getConfig(opts));
-    }
-    if (opts['task-id'] && opts.outline) {
-      return generateOutline(opts['task-id'], require('../scripts/shared').getConfig(opts));
-    }
-    if (opts['task-id'] && opts.qa) {
-      return generateQA(opts['task-id'], opts.qa, require('../scripts/shared').getConfig(opts));
-    }
-    if (opts['task-id'] && opts.mindmap) {
-      return generateMindmap(opts['task-id'], require('../scripts/shared').getConfig(opts));
-    }
-    if (opts['task-id'] && opts['regenerate-mindmap']) {
-      return regenerateMindmap(opts['task-id'], require('../scripts/shared').getConfig(opts));
-    }
-    if (opts['task-id'] && opts.polish) {
-      return polishVideo(opts['task-id'], require('../scripts/shared').getConfig(opts));
     }
     if (opts['video-id'] && opts.retry) {
       return retryVideo(opts['video-id'], require('../scripts/shared').getConfig(opts));
@@ -67,12 +79,6 @@ const commandMap = {
     if (opts['video-id'] && opts.chapters) {
       return getVideoChapters(opts);
     }
-    if (opts['list-records']) {
-      return queryRecordList(opts);
-    }
-    if (opts['record-detail']) {
-      return getRecordDetail(opts);
-    }
     return assetRead(opts);
   },
   search: async (opts) => {
@@ -97,19 +103,9 @@ const commandMap = {
     if (opts.delete) {
       return deleteRecord(opts);
     }
-    if (opts.rename) {
-      return renameRecord(opts);
-    }
-    if (opts.move) {
-      return moveRecord(opts);
-    }
-    if (opts['update-tags']) {
-      return updateVideoTags(opts);
-    }
-    if (opts['update-folder']) {
-      return updateVideoFolder(opts);
-    }
-    return updateRecord(opts);
+    // 其他更新操作（rename, move, update-tags, update-folder）的API不存在
+    // 请使用网页版 https://diting.cc 进行操作
+    throw new Error('该更新功能暂不可用。可用功能: --retry, --delete。请使用网页版 https://diting.cc 进行其他更新操作。');
   }
 };
 
@@ -125,14 +121,23 @@ Commands:
   transcribe     Submit transcription task, poll status, generate AI content
   asset-read     Read detail, transcript, and AI summary
   search         Search knowledge base by keywords
-  update         Update record name, transcript, or meeting summary
+  update         Update record (only retry and delete are available)
 
-Upload Options:
-  --file         Local file path (absolute path required)
-  --oss-dir      OSS directory prefix
-  --create-task  Auto create transcription task after upload
-  --tingwu       Use Tingwu API for transcription
-  --submit-and-wait  Submit task and wait for result
+Upload Options (Tingwu mode only):
+  --file-url     Audio file URL (required, must be publicly accessible)
+  --source-language  Source language: cn/en (default: cn)
+  --task-key     Custom task key
+  --format       Audio format: mp3/wav/m4a (default: mp3)
+  --sample-rate  Sample rate (default: 16000)
+  --enable-transcription  Enable transcription (default: true)
+  --enable-diarization    Enable speaker diarization
+  --speaker-count         Number of speakers (default: 2)
+  --enable-translation    Enable translation
+  --target-languages      Target languages (comma-separated)
+  --enable-auto-chapters  Enable auto chapters
+  --enable-summarization  Enable summarization
+  --enable-text-polish    Enable text polish
+  --submit-and-wait       Submit and wait for result
 
 Transcribe Options:
   --url          Bilibili video URL
@@ -140,19 +145,14 @@ Transcribe Options:
   --task-id      Task ID for polling/status
   --poll         Poll task status until completed
   --summary      Generate AI summary
-  --outline      Generate AI outline
-  --qa           Generate QA (--qa "your question")
-  --mindmap      Generate AI mindmap
-  --regenerate-mindmap  Regenerate mindmap
-  --polish       Generate polished content
   --retry        Retry failed task
   --list         List all videos
   --video-id     Video ID for operations
+  --delete       Delete video
 
 Asset-Read Options:
   --task-id      Task ID
   --asset-id     Asset ID
-  --id           Record ID
   --video-id     Video ID
   --transcript   Get transcript
   --summary      Get summary
@@ -161,13 +161,10 @@ Asset-Read Options:
   --qa           Get QA
   --polish       Get polished content
   --chapters     Get chapters
-  --list-records List records
-  --record-detail Get record detail
 
 Search Options:
   --query        Search query
   --top-k        Number of results (default: 5)
-  --search-type  Search type: hybrid/bm25/vector
   --list-videos  List videos
   --list-keys    List API keys
   --create-key   Create API key
@@ -175,35 +172,44 @@ Search Options:
 
 Update Options:
   --id           Record ID
-  --title        New title
-  --folder-id    Target folder ID
-  --folder-name  Target folder name
-  --tag          Tag to add
   --retry        Retry record
   --delete       Delete record
-  --rename       Rename record
-  --move         Move record to folder
-  --update-tags  Update video tags
-  --update-folder Update video folder
-  --video-id     Video ID for video operations
 
 Examples:
-  diting upload --file "/path/demo.mp3" --create-task
+  # Tingwu 音频转写
+  diting upload --file-url "https://example.com/audio.mp3"
+
+  # B 站视频转写
   diting transcribe --url "https://www.bilibili.com/video/BV1f6HheYExS"
+
+  # 轮询状态
   diting transcribe --task-id tsk_xxx --poll
+
+  # 生成摘要
   diting transcribe --task-id tsk_xxx --summary
-  diting transcribe --task-id tsk_xxx --outline
-  diting transcribe --task-id tsk_xxx --qa "主要讲了什么？"
-  diting transcribe --task-id tsk_xxx --mindmap
-  diting transcribe --task-id tsk_xxx --polish
+
+  # 读取资产详情
   diting asset-read --task-id tsk_xxx
-  diting asset-read --video-id vid_xxx --transcript
+
+  # 读取转录文本
+  diting asset-read --video-id tsk_xxx --transcript
+
+  # 知识库搜索
   diting search --query "吴恩达"
-  diting update --id 123456 --title "新标题"
+
+  # 重试/删除记录
+  diting update --id tsk_xxx --retry
+  diting update --id tsk_xxx --delete
 
 Environment:
   DITING_API_KEY        Required (获取地址: https://diting.cc/home/apikey)
   DITING_API_BASE_URL   Optional (default: https://api.diting.cc)
+
+Note:
+  v1.0.2 - 已完成 Code Review，移除了不存在的API接口
+  部分功能（如智能大纲生成、思维导图生成、问答、文本润色等AI功能）
+  暂不支持，请通过 diting asset-read --video-id <id> --<type> 读取已有数据。
+  详细变更请参考: docs/api/API_CHANGELOG.md
 `);
 }
 
