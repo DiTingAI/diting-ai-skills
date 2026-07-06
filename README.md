@@ -12,9 +12,6 @@
 ## 🎬 Video Tutorial
 
 
-https://github.com/user-attachments/assets/ca873939-e925-414f-a700-1b9bf5f73a57
-
-
 <div align="center">
   <video 
     poster="assets/images/demo-poster.png"
