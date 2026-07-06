@@ -12,11 +12,6 @@
 ## 🎬 Video Tutorial
 
 
-
-<div align="center">
-  https://github.com/user-attachments/assets/ca873939-e925-414f-a700-1b9bf5f73a57
-</div>
-
 > 💡 **New to Diting AI?** This video walks you through installation, API key setup, and your first video transcription — all in just a few minutes!
 
 ## 🚀 Quick Install
