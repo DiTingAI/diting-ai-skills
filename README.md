@@ -9,6 +9,30 @@
 
 **Convert videos to text in seconds with AI. Supports Bilibili links, local files, and knowledge base search. Perfect for AI assistants like XiaoLongXia, Cursor, Claude, and Codex.**
 
+## 🎬 Video Tutorial
+
+<div align="center">
+  <video 
+    poster="assets/images/demo-poster.png"
+    width="720"
+    controls
+    preload="metadata"
+    style="max-width:100%; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.15);"
+  >
+    <source src="assets/images/diting-demo.mp4" type="video/mp4">
+    <!-- Fallback: clickable poster image for environments that strip <video> tags -->
+    <a href="https://www.bilibili.com/video/BV1T7Td69EyF" target="_blank" rel="noopener noreferrer">
+      <img src="assets/images/demo-poster.png" alt="Diting AI Skills Demo — Watch on Bilibili" width="720" style="max-width:100%; border-radius:12px; box-shadow:0 4px 20px rgba(0,0,0,0.15);" />
+    </a>
+  </video>
+  <br/>
+  <a href="https://www.bilibili.com/video/BV1T7Td69EyF" target="_blank" rel="noopener noreferrer">
+    <img src="https://img.shields.io/badge/Bilibili-📺_Watch_Full_Tutorial-FB7299?style=flat-square&logo=bilibili&logoColor=white" alt="Watch on Bilibili">
+  </a>
+</div>
+
+> 💡 **New to Diting AI?** This video walks you through installation, API key setup, and your first video transcription — all in just a few minutes!
+
 ## 🚀 Quick Install
 
 ```bash
