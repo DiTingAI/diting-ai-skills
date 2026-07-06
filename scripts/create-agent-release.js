@@ -102,7 +102,7 @@ try {
   console.log(`\n🎉 Agent专用包创建成功!`);
   console.log(`📁 文件位置: ${zipFilePath}`);
   console.log(`📏 文件大小: ${fileSizeMB} MB`);
-  console.log(`🔗 下载地址: https://oss.diting.cc/assets/${zipFileName}`);
+  console.log(`🔗 下载地址: https://cdn.diting.cc/assets/${zipFileName}`);
   
   console.log(`\n📋 包内容概览:`);
   const listCommand = `unzip -l "${zipFilePath}" | grep -E "(\.sh$|\.md$|diting$|\.json$)" | head -20`;
@@ -110,7 +110,7 @@ try {
   
   console.log(`\n🚀 Agent安装命令:`);
   console.log(`   一键安装: curl -sSL https://raw.githubusercontent.com/diting-ai/diting-skills/main/install.sh | bash`);
-  console.log(`   下载地址: wget https://oss.diting.cc/assets/${zipFileName}`);
+  console.log(`   下载地址: wget https://cdn.diting.cc/assets/${zipFileName}`);
   
 } catch (error) {
   console.error(`❌ 创建ZIP包失败: ${error.message}`);

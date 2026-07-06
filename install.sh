@@ -9,7 +9,7 @@ echo "🔧 安装谛听 AI Skills v1.0.1..."
 echo "📥 下载安装包..."
 
 # 下载地址
-DOWNLOAD_URL="https://oss.diting.cc/assets/diting-skills-1.0.1.zip"
+DOWNLOAD_URL="https://cdn.diting.cc/assets/diting-skills-1.0.1.zip"
 INSTALL_DIR="$HOME/.diting-skills"
 BIN_PATH="$INSTALL_DIR/dist/diting"
 

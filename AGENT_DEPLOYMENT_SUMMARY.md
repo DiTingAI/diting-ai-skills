@@ -71,7 +71,7 @@ diting-skills-1.0.1.zip/
 
 **主安装包**:
 ```
-https://oss.diting.cc/assets/diting-skills-1.0.1.zip
+https://cdn.diting.cc/assets/diting-skills-1.0.1.zip
 ```
 
 **一键安装脚本**:
@@ -91,7 +91,7 @@ curl -sSL https://raw.githubusercontent.com/diting-ai/diting-skills/main/scripts
 ### 📝 **核心安装提示词**
 
 ```markdown
-请安装谛听 Skills 功能，下载地址：https://oss.diting.cc/assets/diting-skills-1.0.1.zip，并发送给小龙虾、Cursor、Claude、Codex 等主流 Agent，按提示即可自动安装。
+请安装谛听 Skills 功能，下载地址：https://cdn.diting.cc/assets/diting-skills-1.0.1.zip，并发送给小龙虾、Cursor、Claude、Codex 等主流 Agent，按提示即可自动安装。
 
 在页面最上方点击「获取 API Key」，完成后把生成的 Key 发给小龙虾，即可完成鉴权并开始使用。
 
@@ -169,7 +169,7 @@ npm run release:verify
 ### 🎉 **部署准备就绪**
 
 **下一步操作**:
-1. **上传ZIP包**到: `https://oss.diting.cc/assets/diting-skills-1.0.1.zip`
+1. **上传ZIP包**到: `https://cdn.diting.cc/assets/diting-skills-1.0.1.zip`
 2. **上传安装脚本**到GitHub仓库
 3. **更新文档**中的下载链接
 4. **测试安装流程**在不同平台

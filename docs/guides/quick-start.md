@@ -117,7 +117,7 @@ diting search --query "meeting notes" --type video
 ### For XiaoLongXia Assistant
 Send this prompt to XiaoLongXia:
 ```
-请安装谛听 AI Skills 功能，下载地址：https://oss.diting.cc/assets/diting-skills-1.0.1.zip，并发送给小龙虾、Cursor、Claude、Codex 等主流 Agent，按提示即可自动安装。
+请安装谛听 AI Skills 功能，下载地址：https://cdn.diting.cc/assets/diting-skills-1.0.1.zip，并发送给小龙虾、Cursor、Claude、Codex 等主流 Agent，按提示即可自动安装。
 
 在页面最上方点击「获取 API Key」，完成后把生成的 Key 发给小龙虾，即可完成鉴权并开始使用。
 ```

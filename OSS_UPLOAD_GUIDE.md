@@ -11,7 +11,7 @@
 
 **OSS 目标地址:**
 ```
-https://oss.diting.cc/assets/diting-skills-1.0.1.zip
+https://cdn.diting.cc/assets/diting-skills-1.0.1.zip
 ```
 
 **为什么上传这个文件:**
@@ -30,7 +30,7 @@ https://oss.diting.cc/assets/diting-skills-1.0.1.zip
 
 **OSS 目标地址 (可选):**
 ```
-https://oss.diting.cc/assets/diting-skills-v1.0.1-skill.zip
+https://cdn.diting.cc/assets/diting-skills-v1.0.1-skill.zip
 ```
 
 **适用场景:**
@@ -68,16 +68,16 @@ curl -X PUT \
 ## 🔍 验证上传
 
 上传完成后，请验证：
-1. **URL 可访问**: https://oss.diting.cc/assets/diting-skills-1.0.1.zip
+1. **URL 可访问**: https://cdn.diting.cc/assets/diting-skills-1.0.1.zip
 2. **文件大小正确**: 49MB 左右
 3. **可正常下载**: 
    ```bash
-   curl -I https://oss.diting.cc/assets/diting-skills-1.0.1.zip
-   wget --spider https://oss.diting.cc/assets/diting-skills-1.0.1.zip
+   curl -I https://cdn.diting.cc/assets/diting-skills-1.0.1.zip
+   wget --spider https://cdn.diting.cc/assets/diting-skills-1.0.1.zip
    ```
 4. **可正常解压**:
    ```bash
-   wget -O test.zip https://oss.diting.cc/assets/diting-skills-1.0.1.zip
+   wget -O test.zip https://cdn.diting.cc/assets/diting-skills-1.0.1.zip
    unzip -l test.zip | head -10
    ```
 
@@ -90,7 +90,7 @@ curl -X PUT \
 curl -sSL https://raw.githubusercontent.com/diting-ai/diting-skills/main/install.sh | bash -s -- --test
 
 # 测试手动安装
-wget https://oss.diting.cc/assets/diting-skills-1.0.1.zip
+wget https://cdn.diting.cc/assets/diting-skills-1.0.1.zip
 unzip diting-skills-1.0.1.zip
 cd diting-skills-1.0.1
 ./dist/diting --version

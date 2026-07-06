@@ -7,7 +7,7 @@
 ```
 # 🤖 谛听 AI Skills - Agent 安装指南
 
-请安装谛听 AI Skills 功能，下载地址：https://oss.diting.cc/assets/diting-skills-1.0.1.zip，并发送给小龙虾、Cursor、Claude、Codex 等主流 Agent，按提示即可自动安装。
+请安装谛听 AI Skills 功能，下载地址：https://cdn.diting.cc/assets/diting-skills-1.0.1.zip，并发送给小龙虾、Cursor、Claude、Codex 等主流 Agent，按提示即可自动安装。
 
 在页面最上方点击「获取 API Key」，完成后把生成的 Key 发给小龙虾，即可完成鉴权并开始使用。
 
@@ -29,7 +29,7 @@ wget -q -O- https://raw.githubusercontent.com/diting-ai/diting-skills/main/insta
 ### 方法二：手动安装（推荐下载地址）
 ```bash
 # 1. 下载安装包（从OSS下载）
-wget https://oss.diting.cc/assets/diting-skills-1.0.1.zip
+wget https://cdn.diting.cc/assets/diting-skills-1.0.1.zip
 
 # 2. 解压
 unzip diting-skills-1.0.1.zip
@@ -178,7 +178,7 @@ cat AGENT_INSTALL_GUIDE.md
 **Q: 安装失败怎么办？**
 ```bash
 # 检查网络连接
-ping oss.diting.cc
+ping cdn.diting.cc
 
 # 检查系统权限
 ls -la /usr/local/bin/
@@ -231,7 +231,7 @@ export PATH="$HOME/.diting-skills/dist:$PATH"
 
 ### 网络要求
 - 访问 https://api.diting.cc
-- 访问 https://oss.diting.cc
+- 访问 https://cdn.diting.cc
 - 稳定的互联网连接
 
 ---
@@ -279,7 +279,7 @@ sudo rm -f /usr/local/bin/diting
 如果只需要核心提示词，使用以下版本：
 
 ```
-请安装谛听 Skills 功能，下载地址：https://oss.diting.cc/assets/diting-skills-1.0.1.zip，并发送给小龙虾、Cursor、Claude、Codex 等主流 Agent，按提示即可自动安装。
+请安装谛听 Skills 功能，下载地址：https://cdn.diting.cc/assets/diting-skills-1.0.1.zip，并发送给小龙虾、Cursor、Claude、Codex 等主流 Agent，按提示即可自动安装。
 
 一键安装命令：
 ```bash

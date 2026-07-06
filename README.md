@@ -79,7 +79,7 @@ curl -sSL https://raw.githubusercontent.com/diting-ai/diting-skills/main/install
 ### Method 2: Manual Installation
 ```bash
 # Download from OSS
-wget https://oss.diting.cc/assets/diting-skills-1.0.2.zip
+wget https://cdn.diting.cc/assets/diting-skills-1.0.2.zip
 
 # Extract
 unzip diting-skills-1.0.2.zip
@@ -152,7 +152,7 @@ diting asset-read --task-id tsk_20260703_xxxxxxxx --type mindmap
 ### XiaoLongXia Assistant
 Send this prompt to XiaoLongXia:
 ```
-请安装谛听 AI Skills 功能，下载地址：https://oss.diting.cc/assets/diting-skills-1.0.2.zip，并发送给小龙虾、Cursor、Claude、Codex 等主流 Agent，按提示即可自动安装。
+请安装谛听 AI Skills 功能，下载地址：https://cdn.diting.cc/assets/diting-skills-1.0.2.zip，并发送给小龙虾、Cursor、Claude、Codex 等主流 Agent，按提示即可自动安装。
 
 在页面最上方点击「获取 API Key」，完成后把生成的 Key 发给小龙虾，即可完成鉴权并开始使用。
 ```
@@ -218,7 +218,7 @@ bundle exec jekyll serve
 
 ### System Requirements
 - **Disk Space**: 50MB minimum
-- **Network**: Access to https://api.diting.cc and https://oss.diting.cc
+- **Network**: Access to https://api.diting.cc and https://cdn.diting.cc
 - **Optional**: Node.js 18+ (for Node.js version only)
 
 ## 🛠️ Troubleshooting
@@ -228,7 +228,7 @@ bundle exec jekyll serve
 **Q: Installation fails?**
 ```bash
 # Check network connection
-ping oss.diting.cc
+ping cdn.diting.cc
 
 # Check system permissions
 ls -la /usr/local/bin/
@@ -332,7 +332,7 @@ Options:
 ## 🌐 Download Links
 
 ### Primary Download
-- **Main Package**: https://oss.diting.cc/assets/diting-skills-1.0.2.zip
+- **Main Package**: https://cdn.diting.cc/assets/diting-skills-1.0.2.zip
 
 ### Alternative Sources
 - **GitHub Releases**: https://github.com/diting-ai/diting-skills/releases
@@ -343,16 +343,16 @@ Options:
 ### Platform-Specific Binaries
 ```bash
 # macOS ARM64
-curl -L https://oss.diting.cc/assets/diting-skills-1.0.0-macos-arm64 -o diting && chmod +x diting
+curl -L https://cdn.diting.cc/assets/diting-skills-1.0.0-macos-arm64 -o diting && chmod +x diting
 
 # macOS x64
-curl -L https://oss.diting.cc/assets/diting-skills-1.0.0-macos-x64 -o diting && chmod +x diting
+curl -L https://cdn.diting.cc/assets/diting-skills-1.0.0-macos-x64 -o diting && chmod +x diting
 
 # Linux x64
-curl -L https://oss.diting.cc/assets/diting-skills-1.0.0-linux-x64 -o diting && chmod +x diting
+curl -L https://cdn.diting.cc/assets/diting-skills-1.0.0-linux-x64 -o diting && chmod +x diting
 
 # Windows x64
-curl -L https://oss.diting.cc/assets/diting-skills-1.0.0-win-x64.exe -o diting.exe
+curl -L https://cdn.diting.cc/assets/diting-skills-1.0.0-win-x64.exe -o diting.exe
 ```
 
 ## 📞 Support & Community
@@ -392,7 +392,7 @@ This project is licensed under the **MIT No Attribution (MIT-0)** License - see 
 复制以下提示词发送给小龙虾助手：
 
 ```
-请安装谛听 AI Skills 功能，下载地址：https://oss.diting.cc/assets/diting-skills-1.0.2.zip，并发送给小龙虾、Cursor、Claude、Codex 等主流 Agent，按提示即可自动安装。
+请安装谛听 AI Skills 功能，下载地址：https://cdn.diting.cc/assets/diting-skills-1.0.2.zip，并发送给小龙虾、Cursor、Claude、Codex 等主流 Agent，按提示即可自动安装。
 
 在页面最上方点击「获取 API Key」，完成后把生成的 Key 发给小龙虾，即可完成鉴权并开始使用。
 ```
@@ -411,7 +411,7 @@ wget -q -O- https://raw.githubusercontent.com/diting-ai/diting-skills/main/insta
 
 ```bash
 # 1. 下载安装包
-wget https://oss.diting.cc/assets/diting-skills-1.0.2.zip
+wget https://cdn.diting.cc/assets/diting-skills-1.0.2.zip
 
 # 2. 解压
 unzip diting-skills-1.0.2.zip
@@ -474,16 +474,16 @@ npm install -g diting-skills
 
 ```bash
 # macOS ARM64
-curl -L https://oss.diting.cc/assets/diting-skills-1.0.0-macos-arm64 -o diting && chmod +x diting
+curl -L https://cdn.diting.cc/assets/diting-skills-1.0.0-macos-arm64 -o diting && chmod +x diting
 
 # macOS x64
-curl -L https://oss.diting.cc/assets/diting-skills-1.0.0-macos-x64 -o diting && chmod +x diting
+curl -L https://cdn.diting.cc/assets/diting-skills-1.0.0-macos-x64 -o diting && chmod +x diting
 
 # Linux x64
-curl -L https://oss.diting.cc/assets/diting-skills-1.0.0-linux-x64 -o diting && chmod +x diting
+curl -L https://cdn.diting.cc/assets/diting-skills-1.0.0-linux-x64 -o diting && chmod +x diting
 
 # Windows
-curl -L https://oss.diting.cc/assets/diting-skills-1.0.0-win-x64.exe -o diting.exe
+curl -L https://cdn.diting.cc/assets/diting-skills-1.0.0-win-x64.exe -o diting.exe
 ```
 
 ## 🎯 快速开始
@@ -560,7 +560,7 @@ diting asset-read --task-id tsk_20260703_xxxxxxxx --type summary
 **Q: 安装失败怎么办？**
 ```bash
 # 检查网络连接
-ping oss.diting.cc
+ping cdn.diting.cc
 
 # 检查系统权限
 ls -la /usr/local/bin/
@@ -612,7 +612,7 @@ Commands:
 ## 🌐 下载地址
 
 ### 主安装包
-- https://oss.diting.cc/assets/diting-skills-1.0.2.zip
+- https://cdn.diting.cc/assets/diting-skills-1.0.2.zip
 
 ### 备用地址
 - https://github.com/diting-ai/diting-skills/releases/download/v1.0.2/diting-skills-1.0.2.zip
@@ -635,7 +635,7 @@ Commands:
 
 ### 网络要求
 - 访问 https://api.diting.cc
-- 访问 https://oss.diting.cc
+- 访问 https://cdn.diting.cc
 - 稳定的互联网连接
 
 ## 🔄 更新与卸载

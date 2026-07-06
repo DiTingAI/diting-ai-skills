@@ -6,7 +6,7 @@
 set -e
 
 VERSION="1.0.1"
-DOWNLOAD_URL="https://oss.diting.cc/assets/diting-skills-${VERSION}.zip"
+DOWNLOAD_URL="https://cdn.diting.cc/assets/diting-skills-${VERSION}.zip"
 INSTALL_DIR="$HOME/.diting-skills"
 BIN_DIR="/usr/local/bin"
 

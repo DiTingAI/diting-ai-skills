@@ -19,7 +19,7 @@
 2. **手动安装**：
    ```bash
    # 下载安装包
-   wget https://oss.diting.cc/assets/diting-skills-1.0.1.zip
+   wget https://cdn.diting.cc/assets/diting-skills-1.0.1.zip
    
    # 解压
    unzip diting-skills-1.0.1.zip
@@ -68,7 +68,7 @@
 ## 📦 下载地址
 
 **主安装包**：
-- https://oss.diting.cc/assets/diting-skills-1.0.1.zip
+- https://cdn.diting.cc/assets/diting-skills-1.0.1.zip
 
 **备用地址**：
 - https://github.com/diting-ai/diting-skills/releases/download/v1.0.1/diting-skills-1.0.1.zip
@@ -117,7 +117,7 @@ curl -sSL https://raw.githubusercontent.com/diting-ai/diting-skills/main/scripts
 ### 分步安装
 ```bash
 # 1. 下载
-wget https://oss.diting.cc/assets/diting-skills-1.0.1.zip
+wget https://cdn.diting.cc/assets/diting-skills-1.0.1.zip
 
 # 2. 解压
 unzip diting-skills-1.0.1.zip
