@@ -29,7 +29,7 @@ diting-skills-v1.0.1-skill.zip
 │   ├── shared.js                # 共享工具函数
 │   ├── transcribe.js            # 转写脚本
 │   ├── update_record.js         # 记录更新脚本
-│   └── upload.js                # 上传脚本
+│   └── upload.js                # 上传脚本（⚠️ v1.0.3 清理已整体删除）
 ├── README.md                     # 项目说明
 ├── SKILL.md                      # Skill 使用指南
 ├── package.json                  # Node.js 项目配置
@@ -97,10 +97,11 @@ cp .env.example .env
 |------|------|------|
 | **配置检查** | `/diting config` | 检查 API Key 配置 |
 | **B站转写** | `/diting transcribe` | 解析 B站链接并创建转写任务 |
-| **听悟转写** | `/diting transcribe --tingwu` | 提交音频 URL 进行听悟转写 |
 | **状态查询** | `/diting transcribe --poll` | 轮询任务处理状态 |
 | **资产读取** | `/diting asset-read` | 读取原文、纪要、文件详情 |
 | **知识库搜索** | `/diting search` | 搜索知识库和文件列表 |
+
+> ⚠️ **已移除功能**：听悟（Tingwu）音频转写（原 `diting transcribe --tingwu` / `scripts/upload.js`）因服务端无对应接口，已在 v1.0.3 清理中整体移除。音频文件转写暂不支持，仅保留 B 站视频转写。
 
 ## 📋 环境要求
 
@@ -115,7 +116,7 @@ cp .env.example .env
 - ✅ `update_record.js`: 移除 `/api/record/*` 接口，改用 `/api/v1/videos/*` 标准接口
 - ✅ `asset_read.js`: 统一通过 `GET /api/v1/videos/{task_id}` 读取数据
 - ✅ `transcribe.js`: 移除未公开的 AI 功能接口（outline/qa/mindmap/polish）
-- ✅ `upload.js`: 修正听悟接口路径（添加 `/api/v1` 前缀）
+- ⚠️ `upload.js`: 原"修正听悟接口路径"改动已随该文件在 v1.0.3 清理中整体移除
 - ✅ `search.js`: 修正搜索参数（`query` → `question`）
 - ✅ `bin/diting.js`: 更新帮助文档，移除已废弃功能
 - ✅ 添加 [API 更新日志](docs/api/API_CHANGELOG.md)

@@ -1,22 +1,22 @@
 ---
 name: Diting
-description: |
-  Diting - 提交B站链接进行解析转写，查询状态，读取原文、纪要和文件详情，搜索知识库，提交音频文件进行听悟转写。
-
-  **MVP 版本限制**:
-  - 暂不支持本地上传文件
-  - 暂不支持文件更新、重命名、标签和文件夹操作（请使用网页版 https://diting.cc 进行操作）
-  - 暂不支持智能大纲、思维导图、问答、润色等AI功能（通过 `GET /api/v1/videos/{task_id}` 读取已有数据）
-
-  当以下情况时使用此 Skill：
-  (1) 用户要提交B站链接进行解析转写
-  (2) 用户要查询文件处理状态、原文、纪要、详情
-  (3) 用户要按关键词搜索知识库
-  (4) 用户要提交音频URL进行听悟转写
+description: 谛听 Diting —— 提交 B 站链接进行解析转写，查询任务状态，读取原文与纪要，并按关键词检索私有知识库。
 metadata: {"openclaw": {"requires": {}, "optionalEnv": ["DITING_API_KEY"], "baseUrl": "https://api.diting.cc", "homepage": "https://diting.cc"}}
 ---
 
 # 谛听 AI Skill
+
+## 版本说明与使用场景
+
+**MVP 版本限制**:
+- 暂不支持本地上传文件
+- 暂不支持文件更新、重命名、标签和文件夹操作（请使用网页版 https://diting.cc 进行操作）
+- 暂不支持智能大纲、思维导图、问答、润色等AI功能（通过 `GET /api/v1/videos/{task_id}` 读取已有数据）
+
+**当以下情况时使用此 Skill**：
+1. 用户要提交B站链接进行解析转写
+2. 用户要查询文件处理状态、原文、纪要、详情
+3. 用户要按关键词搜索知识库
 
 ## Agent 必读约束
 
@@ -55,7 +55,7 @@ https://api.diting.cc
 | 指令 | 角色 | 说明 | 详细文档 |
 |------|------|------|---------|
 | `/diting config` | 配置助手 | 检查 API Key 配置 | [references/auth.md](references/auth.md) |
-| `/diting transcribe` | 转写助手 | 提交B站链接、创建转写任务、轮询状态、提交音频URL听悟转写 | [references/transcribe.md](references/transcribe.md) |
+| `/diting transcribe` | 转写助手 | 提交B站链接、创建转写任务、轮询状态 | [references/transcribe.md](references/transcribe.md) |
 | `/diting asset-read` | 文件助手 | 读取详情、原文、纪要 | [references/asset-read.md](references/asset-read.md) |
 | `/diting search` | 搜索助手 | 搜索知识库、按文件名搜索文件列表 | [references/search.md](references/search.md) |
 
@@ -69,7 +69,6 @@ https://api.diting.cc
 “看原文/纪要/详情”        -> /diting asset-read
 “搜索文件/找文件/知识库”   -> /diting search
 “配置谛听/API Key”       -> /diting config
-“听悟转写/音频转写”       -> /diting transcribe（tingwu模式）
 ```
 
 优先级：
@@ -93,18 +92,7 @@ node scripts/transcribe.js --url "https://www.bilibili.com/video/BV1f6HheYExS"
 - `status`
 - `estimated_seconds`
 
-### 2. 音频文件听悟转写
-
-```bash
-node scripts/upload.js --tingwu --file-url "https://example.com/audio.mp3"
-```
-
-完成后返回：
-
-- `task_key`
-- 转写结果
-
-### 3. 查询处理状态
+### 2. 查询处理状态
 
 ```bash
 node scripts/transcribe.js --task-id tsk_20260703_xxxxxxxx --poll
@@ -147,7 +135,6 @@ node scripts/search.js --query "吴恩达"
 - `scripts/transcribe.js`
 - `scripts/asset_read.js`
 - `scripts/search.js`
-- `scripts/upload.js`（仅支持 tingwu 模式）
 
 使用前提：
 

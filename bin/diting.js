@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 const { formatJson, parseArgs } = require('../scripts/shared');
-const { tingwuSubmitAndWait, tingwuSubmitFileTask, tingwuGetTaskStatus, tingwuGetTranscription } = require('../scripts/upload');
 const { transcribe, pollTask, generateSummary, retryVideo, queryVideoList, deleteVideo } = require('../scripts/transcribe');
 const { assetRead, getVideoTranscript, getVideoSummary, getVideoOutline, getVideoMindmap, getVideoQA, getVideoPolish, getVideoChapters } = require('../scripts/asset_read');
 const { search, queryVideoList: searchQueryVideoList, getApiKeys, createApiKey, deleteApiKey } = require('../scripts/search');
@@ -11,34 +10,6 @@ const command = process.argv[2];
 const args = parseArgs(process.argv.slice(3));
 
 const commandMap = {
-  upload: async (opts) => {
-    // upload 现在仅支持 tingwu 模式
-    const fileUrl = opts['file-url'];
-    if (!fileUrl) {
-      throw new Error('缺少 --file-url 参数（需要提供可访问的音频文件URL）');
-    }
-    const config = require('../scripts/shared').getConfig(opts);
-    const tingwuParams = {
-      source_language: opts['source-language'] || 'cn',
-      file_url: fileUrl,
-      task_key: opts['task-key'] || `task_${Date.now()}`,
-      format: opts.format || 'mp3',
-      sample_rate: opts['sample-rate'] || 16000,
-      enable_transcription: opts['enable-transcription'] !== false,
-      enable_diarization: opts['enable-diarization'] || false,
-      speaker_count: opts['speaker-count'] || 2,
-      enable_translation: opts['enable-translation'] || false,
-      target_languages: opts['target-languages'] ? opts['target-languages'].split(',') : [],
-      enable_auto_chapters: opts['enable-auto-chapters'] || false,
-      enable_summarization: opts['enable-summarization'] || false,
-      summarization_types: opts['summarization-types'] ? opts['summarization-types'].split(',') : [],
-      enable_text_polish: opts['enable-text-polish'] || false
-    };
-    if (opts['submit-and-wait']) {
-      return tingwuSubmitAndWait(config, tingwuParams);
-    }
-    return tingwuSubmitFileTask(config, tingwuParams);
-  },
   transcribe: async (opts) => {
     if (opts['task-id'] && opts.poll) {
       return pollTask(opts);
@@ -117,31 +88,13 @@ Usage:
   diting <command> [options]
 
 Commands:
-  upload         Upload local audio/video and optionally create task
   transcribe     Submit transcription task, poll status, generate AI content
   asset-read     Read detail, transcript, and AI summary
   search         Search knowledge base by keywords
   update         Update record (only retry and delete are available)
 
-Upload Options (Tingwu mode only):
-  --file-url     Audio file URL (required, must be publicly accessible)
-  --source-language  Source language: cn/en (default: cn)
-  --task-key     Custom task key
-  --format       Audio format: mp3/wav/m4a (default: mp3)
-  --sample-rate  Sample rate (default: 16000)
-  --enable-transcription  Enable transcription (default: true)
-  --enable-diarization    Enable speaker diarization
-  --speaker-count         Number of speakers (default: 2)
-  --enable-translation    Enable translation
-  --target-languages      Target languages (comma-separated)
-  --enable-auto-chapters  Enable auto chapters
-  --enable-summarization  Enable summarization
-  --enable-text-polish    Enable text polish
-  --submit-and-wait       Submit and wait for result
-
 Transcribe Options:
   --url          Bilibili video URL
-  --upload-id    Upload ID from previous upload
   --task-id      Task ID for polling/status
   --poll         Poll task status until completed
   --summary      Generate AI summary
@@ -176,9 +129,6 @@ Update Options:
   --delete       Delete record
 
 Examples:
-  # Tingwu 音频转写
-  diting upload --file-url "https://example.com/audio.mp3"
-
   # B 站视频转写
   diting transcribe --url "https://www.bilibili.com/video/BV1f6HheYExS"
 

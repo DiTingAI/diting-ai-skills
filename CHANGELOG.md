@@ -2,6 +2,34 @@
 
 所有项目的显著变更都将记录在此文件中。
 
+## [1.0.3] - 2026-07-18
+
+### 已移除
+
+**Code Review 清理：删除服务端不存在的听悟（Tingwu）音频转写链路，确保发布后无 BUG**
+
+- ❌ 删除 `scripts/upload.js`（OSS 上传 + 听悟提交脚本），因服务端无对应听悟接口
+- ❌ 移除 `POST /api/v1/tingwu/tasks`
+- ❌ 移除 `POST /api/v1/tingwu/tasks/submit-and-wait`
+- ❌ 移除 `GET /api/v1/tingwu/tasks/status`
+- ❌ 移除 `GET /api/v1/tingwu/transcription`
+- 同步清理 `scripts/shared.js` 中仅服务于上传功能的死代码（`ensureFileExists` / `getMimeType` / `randomId` / `buildOssKey` / `uploadToOss` / `normalizeStyle` 及 OSS 相关导入）
+
+### 保留的有效接口
+- `POST /api/v1/videos/bilibili/check`
+- `POST /api/v1/videos/bilibili/process`
+- `GET /api/v1/videos/{task_id}/status`
+- `GET /api/v1/videos/{task_id}`
+- `POST /api/v1/videos/summary`
+- `POST /api/v1/videos/{video_id}/retry`
+- `GET /api/v1/videos`
+- `DELETE /api/v1/videos/{task_id}`
+- `GET /v1/assets/{asset_id}`
+- `POST /api/v1/search`
+- `GET /api/v1/apikeys`
+- `POST /api/v1/apikeys`
+- `DELETE /api/v1/apikeys/{keyId}`
+
 ## [1.0.2] - 2026-07-06
 
 ### 已修复 - API接口对齐
@@ -32,10 +60,6 @@
 - ❌ 移除 `POST /api/v1/videos/mindmap/regenerate`（不存在）
 - ❌ 移除 `POST /api/v1/videos/polish`（不存在）→ 数据通过 `GET /api/v1/videos/{task_id}` 获取
 
-#### upload.js
-- ❌ 修正 `/tingwu/tasks` → ✅ `/api/v1/tingwu/tasks`
-- ❌ 修正 `/tingwu/transcription` → ✅ `/api/v1/tingwu/transcription`
-
 #### search.js
 - ✅ 修正搜索参数 `query` → `question`（符合API文档规范）
 
@@ -53,10 +77,6 @@
 - `GET /api/v1/apikeys`
 - `POST /api/v1/apikeys`
 - `DELETE /api/v1/apikeys/{keyId}`
-- `POST /api/v1/tingwu/tasks`
-- `POST /api/v1/tingwu/tasks/submit-and-wait`
-- `GET /api/v1/tingwu/tasks/status`
-- `GET /api/v1/tingwu/transcription`
 
 ## [1.0.1] - 2026-07-05
 
@@ -81,14 +101,14 @@
 ### 新增功能
 - 初始版本发布
 - 支持 Bilibili 视频转写
-- 支持音频文件上传和转写
+- 支持音频文件上传和转写（⚠️ v1.0.3 已移除）
 - 支持知识库搜索
 - 支持资产读取和更新
 - 多平台二进制构建支持
 - 完整的 CLI 接口
 
 ### 核心功能
-- `upload`: 上传本地音频/视频文件
+- `upload`: 上传本地音频/视频文件（⚠️ v1.0.3 已移除）
 - `transcribe`: 提交转写任务和轮询状态
 - `asset-read`: 读取资产详情、原文和 AI 摘要
 - `search`: 搜索知识库

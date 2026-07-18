@@ -1,7 +1,7 @@
 {
   "name": "diting-skills",
-  "version": "1.0.2",
-  "description": "谛听 AI Skills - 上传本地音频/视频，解析B站链接，创建转写任务，检索知识库，并读取、更新文件内容。",
+  "version": "1.0.3",
+  "description": "谛听 AI Skills - 解析B站链接，创建转写任务，检索知识库，并读取、更新文件内容。",
   "main": "./bin/diting.js",
   "license": "MIT-0",
   "author": "diting",

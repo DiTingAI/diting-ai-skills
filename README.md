@@ -142,17 +142,11 @@ diting --help
 # Transcribe Bilibili video
 diting transcribe --url "https://www.bilibili.com/video/BV1f6HheYExS"
 
-# Upload local file
-diting upload --file "/path/to/video.mp4" --create-task
-
 # Search knowledge base
 diting search --query "machine learning"
 
 # Read asset details
 diting asset-read --task-id tsk_20260703_xxxxxxxx
-
-# Audio transcription
-diting transcribe --tingwu --file-url "https://example.com/audio.mp3"
 ```
 
 ### Task Management
@@ -526,17 +520,11 @@ export DITING_API_KEY=sk-diting-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 # 转写 B 站视频
 diting transcribe --url "https://www.bilibili.com/video/BV1f6HheYExS"
 
-# 上传本地文件并转写
-diting upload --file "/path/to/video.mp4" --create-task
-
 # 查询任务状态
 diting asset-read --task-id tsk_xxx
 
 # 搜索知识库
 diting search --query "吴恩达"
-
-# 音频听悟转写
-diting transcribe --tingwu --file-url "https://example.com/audio.mp3"
 ```
 
 ## 📚 详细使用指南

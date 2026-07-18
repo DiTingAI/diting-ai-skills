@@ -30,9 +30,6 @@ diting config
 # Transcribe from Bilibili URL
 diting transcribe --url "https://www.bilibili.com/video/BV1xxx"
 
-# Upload and transcribe local file
-diting upload --file "/path/to/video.mp4" --create-task
-
 # Check task status
 diting transcribe --task-id tsk_xxx --poll
 ```
@@ -255,7 +252,7 @@ MAX_RETRIES=3
 RETRY_COUNT=0
 
 while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-  if diting upload --file "video.mp4" --create-task; then
+  if diting transcribe --url "https://www.bilibili.com/video/BV1xxx"; then
     echo "Success!"
     break
   fi
@@ -383,10 +380,10 @@ diting transcribe --url "$URL" --verbose 2>&1 | tee transcription.log
 # Split large videos before processing
 ffmpeg -i large_video.mp4 -c copy -map 0 -segment_time 1800 -f segment output_%03d.mp4
 
-# Process segments
-for segment in output_*.mp4; do
-  diting upload --file "$segment" --create-task
-done
+# 注意：本地分段文件暂不支持上传，请改为提交 B 站视频链接：
+# for segment in output_*.mp4; do
+#   diting transcribe --url "https://www.bilibili.com/video/BV1xxx"
+# done
 ```
 
 ## 🆘 Troubleshooting

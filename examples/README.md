@@ -41,15 +41,15 @@ diting transcribe --url "https://www.bilibili.com/video/BV1xxx" && \
 diting asset-read --task-id tsk_xxx --type summary
 ```
 
-### Example 2: Process Local Files
+### Example 2: Transcribe Bilibili Videos
 ```bash
-# Upload and transcribe local file
-diting upload --file "meeting.mp4" --create-task
+# Transcribe a Bilibili video
+diting transcribe --url "https://www.bilibili.com/video/BV1xxx"
 
-# Process multiple files
-for file in *.mp4; do
-  echo "Processing $file..."
-  diting upload --file "$file" --create-task
+# Process multiple videos
+for url in "$@"; do
+  echo "Processing $url..."
+  diting transcribe --url "$url"
 done
 ```
 
@@ -87,12 +87,12 @@ diting asset-read --task-id $(cat last_task.txt) --type summary
 # Set API key
 export DITING_API_KEY="your_api_key_here"
 
-# Process all video files in directory
-for video in ./videos/*.mp4; do
-  echo "Processing: $video"
-  diting upload --file "$video" --create-task
-  sleep 5  # Wait between uploads
-done
+# Process all Bilibili video URLs listed in urls.txt
+while read -r url; do
+  echo "Processing: $url"
+  diting transcribe --url "$url"
+  sleep 5
+done < urls.txt
 ```
 
 ### Research Assistant Script
@@ -127,9 +127,9 @@ OUTPUT_DIR="./meeting_summaries"
 # Create output directory
 mkdir -p "$OUTPUT_DIR"
 
-# Upload and transcribe meeting recording
+# Transcribe meeting recording (提交 B 站会议录像链接)
 echo "Processing meeting recording: $MEETING_FILE"
-TASK_ID=$(diting upload --file "$MEETING_FILE" --create-task | grep -o "tsk_[a-zA-Z0-9_]*")
+TASK_ID=$(diting transcribe --url "$MEETING_FILE" | grep -o "tsk_[a-zA-Z0-9_]*")
 
 # Wait for transcription
 echo "Waiting for transcription to complete..."
@@ -220,7 +220,7 @@ MEETINGS=("meeting1.mp4" "meeting2.mp4" "meeting3.mp4")
 
 for meeting in "${MEETINGS[@]}"; do
   echo "Processing: $meeting"
-  diting upload --file "$meeting" --create-task
+  diting transcribe --url "$meeting"
   # Generate summary and action items
 done
 ```

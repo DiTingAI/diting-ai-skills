@@ -67,7 +67,6 @@ describe('CLI interface', () => {
 
   test('should list all available commands in help', () => {
     const output = execSync(`node ${cliPath} --help`, { encoding: 'utf8' });
-    expect(output).toContain('upload');
     expect(output).toContain('transcribe');
     expect(output).toContain('asset-read');
     expect(output).toContain('search');

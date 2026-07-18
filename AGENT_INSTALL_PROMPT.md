@@ -130,9 +130,6 @@ diting search --query "人工智能"
 
 # 获取文件详情
 diting asset-read --task-id tsk_20260703_xxxxxxxx
-
-# 音频听悟转写
-diting transcribe --tingwu --file-url "https://example.com/audio.mp3"
 ```
 
 ### 查询任务状态

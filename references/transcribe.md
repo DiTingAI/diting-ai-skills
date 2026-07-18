@@ -5,7 +5,6 @@
 当前支持：
 
 - 提交 B 站链接进行解析转写
-- 提交音频 URL 进行听悟转写
 - 查询转写任务状态
 - 轮询等待任务完成
 
@@ -134,58 +133,7 @@ DELETE /api/v1/videos/{task_id}
 
 ---
 
-## 2. 听悟转写
-
-### 提交听悟任务
-
-```text
-POST /api/v1/tingwu/tasks
-```
-
-请求体：
-
-```json
-{
-  "source_language": "cn",
-  "file_url": "https://example.com/audio.mp3",
-  "task_key": "task_xxx",
-  "format": "mp3",
-  "sample_rate": 16000,
-  "enable_transcription": true,
-  "enable_diarization": false,
-  "speaker_count": 2,
-  "enable_translation": false,
-  "target_languages": [],
-  "enable_auto_chapters": false,
-  "enable_summarization": false,
-  "summarization_types": [],
-  "enable_text_polish": false
-}
-```
-
-### 提交并等待结果
-
-```text
-POST /api/v1/tingwu/tasks/submit-and-wait
-```
-
-使用相同的请求体，但会阻塞等待转写完成后返回结果。
-
-### 查询任务状态
-
-```text
-GET /api/v1/tingwu/tasks/status?task_id=<task_id>
-```
-
-### 获取转写结果
-
-```text
-GET /api/v1/tingwu/transcription?url=<result_url>
-```
-
----
-
-## 3. 视频列表查询
+## 2. 视频列表查询
 
 ```text
 GET /api/v1/videos
@@ -204,22 +152,21 @@ GET /api/v1/videos
 
 ---
 
-## 4. 使用建议
+## 3. 使用建议
 
 - 用户提供 B 站链接时，先调用 check 接口获取视频信息，再提交 process
-- 用户提供音频 URL 时，使用听悟转写接口
 - 查询状态时使用轮询方式，间隔建议 5-10 秒
 - 状态为 completed 时获取完整结果
 
 ---
 
-## 5. 已废弃/不存在的接口
+## 4. 已废弃/不存在的接口
 
 以下接口已从代码中移除，请使用替代方案：
 
 | 废弃接口 | 替代方案 |
 |----------|----------|
-| `POST /api/record/create` | 使用听悟接口处理音频，或使用 B 站转写接口处理视频 |
+| `POST /api/record/create` | 使用 B 站转写接口处理视频（音频转写暂不支持） |
 | `POST /api/record/update` | 使用网页版 https://diting.cc |
 | `POST /api/record/retry` | `POST /api/v1/videos/{video_id}/retry` |
 | `POST /api/record/delete` | `DELETE /api/v1/videos/{task_id}` |
@@ -267,10 +214,4 @@ node scripts/transcribe.js --task-id tsk_20260703_xxxxxxxx --summary
 
 ```bash
 node scripts/transcribe.js --list --page 1 --page_size 10
-```
-
-### 听悟转写
-
-```bash
-node scripts/upload.js --tingwu --file-url "https://example.com/audio.mp3"
 ```

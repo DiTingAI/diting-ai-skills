@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 
-const path = require('path');
 const {
   formatJson,
   getConfig,
@@ -175,28 +174,12 @@ function isValidBilibiliUrl(url) {
   );
 }
 
-function normalizeStyle(style, fileName) {
-  if (style) {
-    return style.toLowerCase();
-  }
-
-  const ext = path.extname(fileName).toLowerCase().slice(1);
-  if (['mp3', 'wav', 'm4a', 'aac', 'flac', 'ogg', 'amr'].includes(ext)) {
-    return 'audio';
-  }
-  if (['mp4', 'mov', 'm4v', 'avi', 'mkv', 'webm'].includes(ext)) {
-    return 'video';
-  }
-  return null;
-}
-
 async function transcribe(options = {}) {
   const config = getConfig(options);
   const url = options.url;
-  const uploadId = options['upload-id'];
 
-  if (!url && !uploadId) {
-    throw new Error('缺少 --url 或 --upload-id 参数');
+  if (!url) {
+    throw new Error('缺少 --url 参数（请输入有效的 B 站视频链接）');
   }
 
   if (url) {
@@ -262,12 +245,6 @@ async function transcribe(options = {}) {
       submittedVideos: videosPayload,
       response: task
     };
-  }
-
-  if (uploadId) {
-    // ❌ /api/record/create 接口不存在
-    // 本地上传功能暂不可用，请使用听悟接口处理音频文件
-    throw new Error('本地上传功能暂不可用。请使用听悟接口处理音频文件：\n  node scripts/upload.js --tingwu --file-url <音频URL>');
   }
 }
 

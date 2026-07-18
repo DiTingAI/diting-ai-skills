@@ -76,22 +76,6 @@ diting asset-read --task-id tsk_20260706_abc123def456 --type summary
 diting asset-read --task-id tsk_20260706_abc123def456 --type mindmap
 ```
 
-## 📁 Upload Local Files
-
-### Upload and Transcribe
-```bash
-# Upload a local video file
-diting upload --file "/path/to/your/video.mp4" --create-task
-
-# Upload a local audio file
-diting upload --file "/path/to/your/audio.mp3" --create-task
-```
-
-### Supported File Formats
-- **Video**: MP4, MOV, AVI, MKV, WMV, FLV
-- **Audio**: MP3, WAV, M4A, AAC, FLAC
-- **Maximum Size**: 2GB per file
-
 ## 🔍 Search Knowledge Base
 
 ### Basic Search
@@ -150,13 +134,10 @@ diting search --query "相关主题"
 
 ### Workflow 2: Meeting Recording Processing
 ```bash
-# 1. Upload meeting recording
-diting upload --file "meeting.mp4" --create-task
-
-# 2. Get transcription
+# 1. Get transcription
 diting asset-read --task-id tsk_xxx --type original
 
-# 3. Get action items (AI summary)
+# 2. Get action items (AI summary)
 diting asset-read --task-id tsk_xxx --type summary
 ```
 
@@ -194,7 +175,6 @@ diting --help
 # View command-specific help
 diting transcribe --help
 diting search --help
-diting upload --help
 ```
 
 ### Common Issues

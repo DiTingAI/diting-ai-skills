@@ -70,7 +70,6 @@ diting-skills/
 ├── scripts/               # 功能脚本
 │   ├── shared.js         # 共享工具函数
 │   ├── transcribe.js     # 转写功能
-│   ├── upload.js         # 上传功能
 │   ├── search.js         # 搜索功能
 │   ├── asset_read.js     # 资产读取
 │   ├── update_record.js  # 记录更新

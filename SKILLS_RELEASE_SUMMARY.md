@@ -45,7 +45,7 @@ diting-skills-v1.0.1-skill.zip/
     ├── scripts/transcribe.js   # 转写脚本
     ├── scripts/search.js       # 搜索脚本
     ├── scripts/asset_read.js   # 资产读取脚本
-    ├── scripts/upload.js       # 上传脚本
+    ├── scripts/upload.js       # 上传脚本（⚠️ v1.0.3 清理已整体删除）
     ├── scripts/build_binary.js # 二进制构建脚本
     ├── scripts/create-release-zip.js # 发布包创建脚本
     └── scripts/verify-release.js # 发布包验证脚本
@@ -112,7 +112,8 @@ npm run release:verify
 | `/diting transcribe` | 视频转写 | B站链接解析和转写任务创建 |
 | `/diting asset-read` | 资产读取 | 获取原文、纪要、文件详情 |
 | `/diting search` | 知识库搜索 | 搜索文件和知识库内容 |
-| `/diting transcribe --tingwu` | 听悟转写 | 音频URL转写 |
+
+> ⚠️ **已移除功能**：听悟（Tingwu）音频转写（原 `/diting transcribe --tingwu` / `scripts/upload.js`）因服务端无对应接口，已在 v1.0.3 清理中整体移除。
 
 ## 🎯 技术规格
 

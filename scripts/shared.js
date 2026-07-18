@@ -1,13 +1,5 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
-const path = require('path');
-const crypto = require('crypto');
-const { Blob, FormData } = require('buffer');
-
-const AUDIO_EXTENSIONS = new Set(['mp3', 'wav', 'm4a', 'aac', 'flac', 'ogg', 'amr']);
-const VIDEO_EXTENSIONS = new Set(['mp4', 'mov', 'm4v', 'avi', 'mkv', 'webm']);
-
 function parseArgs(argv) {
   const result = {};
 
@@ -43,27 +35,6 @@ function getConfig(options = {}) {
     token,
     baseURL
   };
-}
-
-function ensureFileExists(filePath) {
-  if (!filePath) {
-    throw new Error('缺少文件路径');
-  }
-
-  if (!path.isAbsolute(filePath)) {
-    throw new Error(`文件路径必须为绝对路径: ${filePath}`);
-  }
-
-  if (!fs.existsSync(filePath)) {
-    throw new Error(`文件不存在: ${filePath}`);
-  }
-
-  const stats = fs.statSync(filePath);
-  if (!stats.isFile()) {
-    throw new Error(`目标不是文件: ${filePath}`);
-  }
-
-  return stats;
 }
 
 function createHeaders(token, extraHeaders = {}) {
@@ -153,7 +124,7 @@ async function requestJSON({ baseURL, token, method, apiPath, query, body, extra
   if (!response.ok) {
     const errorCode = data.error?.error_code || data.error_code;
     const errorMessage = data.error?.detail || data.error?.message || data.message || `请求失败 ${response.status}`;
-    
+
     let message = errorMessage;
     if (response.status === 401) {
       message = 'API Key 无效或已过期，请访问 https://diting.cc/home/apikey 重新获取';
@@ -173,90 +144,6 @@ async function requestJSON({ baseURL, token, method, apiPath, query, body, extra
   }
 
   return data;
-}
-
-function normalizeStyle(input, fileName = '') {
-  if (input === 1 || input === '1' || input === 'video') {
-    return 1;
-  }
-
-  if (input === 2 || input === '2' || input === 'audio') {
-    return 2;
-  }
-
-  if (fileName) {
-    const extension = path.extname(fileName).toLowerCase().replace('.', '');
-    if (VIDEO_EXTENSIONS.has(extension)) {
-      return 1;
-    }
-    if (AUDIO_EXTENSIONS.has(extension)) {
-      return 2;
-    }
-  }
-
-  return 0;
-}
-
-function getMimeType(fileName) {
-  const extension = path.extname(fileName).toLowerCase().replace('.', '');
-
-  if (extension === 'mp3') return 'audio/mpeg';
-  if (extension === 'wav') return 'audio/wav';
-  if (extension === 'm4a') return 'audio/mp4';
-  if (extension === 'aac') return 'audio/aac';
-  if (extension === 'flac') return 'audio/flac';
-  if (extension === 'ogg') return 'audio/ogg';
-  if (extension === 'amr') return 'audio/amr';
-  if (extension === 'mp4') return 'video/mp4';
-  if (extension === 'mov') return 'video/quicktime';
-  if (extension === 'm4v') return 'video/x-m4v';
-  if (extension === 'avi') return 'video/x-msvideo';
-  if (extension === 'mkv') return 'video/x-matroska';
-  if (extension === 'webm') return 'video/webm';
-
-  return 'application/octet-stream';
-}
-
-function randomId() {
-  if (typeof crypto.randomUUID === 'function') {
-    return crypto.randomUUID();
-  }
-
-  return `${Date.now()}_${Math.random().toString(16).slice(2)}`;
-}
-
-function buildOssKey(dir, fileName) {
-  const extension = path.extname(fileName).toLowerCase();
-  return `${dir}${randomId()}${extension}`;
-}
-
-async function uploadToOss({ host, filePath, fileName, key, policy, accessid, signature }) {
-  const mimeType = getMimeType(fileName);
-  const fileBuffer = fs.readFileSync(filePath);
-  const form = new FormData();
-
-  form.append('key', key);
-  form.append('policy', policy);
-  form.append('OSSAccessKeyId', accessid);
-  form.append('success_action_status', '200');
-  form.append('signature', signature);
-  form.append('name', fileName);
-  form.append('file', new Blob([fileBuffer], { type: mimeType }), fileName);
-
-  const response = await fetch(host, {
-    method: 'POST',
-    body: form
-  });
-
-  const text = await response.text();
-  if (!response.ok) {
-    throw new Error(`OSS 上传失败 ${response.status}: ${text}`);
-  }
-
-  return {
-    status: response.status,
-    text
-  };
 }
 
 function formatJson(data) {
@@ -300,15 +187,11 @@ function isValidBilibiliUrl(url) {
 }
 
 module.exports = {
-  buildOssKey,
-  ensureFileExists,
   extractBilibiliUrl,
   formatJson,
   getConfig,
   isValidBilibiliUrl,
-  normalizeStyle,
   parseArgs,
   requestJSON,
-  requestJSONWithRetry,
-  uploadToOss
+  requestJSONWithRetry
 };
