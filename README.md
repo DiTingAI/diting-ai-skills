@@ -1,6 +1,6 @@
 # 谛听 AI Skills（Diting Skill）
 
-[![Version](https://img.shields.io/badge/version-1.0.5-green.svg)]()
+[![Version](https://img.shields.io/badge/version-1.0.6-green.svg)]()
 [![License: MIT-0](https://img.shields.io/badge/License-MIT--0-blue.svg)](https://opensource.org/licenses/MIT-0)
 [![Node](https://img.shields.io/badge/Node.js-18%2B-lightgrey.svg)]()
 [![GitHub Stars](https://img.shields.io/github/stars/DiTingAI/diting-ai-skills?style=social)](https://github.com/DiTingAI/diting-ai-skills)
@@ -49,7 +49,7 @@ echo 'export DITING_API_KEY=你的Key' >> ~/.zshrc && source ~/.zshrc
 ```bash
 diting transcribe --url "https://www.bilibili.com/video/BV1f6HheYExS"
 diting config        # 自查：Key 脱敏状态、渠道、base URL
-diting --version     # 1.0.5 (channel=skillhub)
+diting --version     # 1.0.6 (channel=skillhub)
 ```
 
 ---
@@ -182,17 +182,17 @@ export PATH="$HOME/.diting-skills:$PATH"
 
 ## 九、版本
 
-- **当前版本**：v1.0.5（2026-11-23）
+- **当前版本**：v1.0.6（2026-11-24）
 - **变更历史**：[CHANGELOG.md](CHANGELOG.md)
-- 本版重点：修复失效的安装链路（仓库地址 404）、删除失实的能力描述、
-  全链路渠道归因埋点（`from=skillhub`）、新增 `diting config` 与 `diting --version`
+- 本版重点：修复搜索命令 `success` 误判失败与引用来源丢失、`asset-read` 支持 `--type` / `--task-id`、
+  请求真实超时、API 文档地址更新为 <https://diting.cc/api-doc.html>
 
 ## 十、支持
 
 - 仓库：<https://github.com/DiTingAI/diting-ai-skills>
 - 问题反馈：<https://github.com/DiTingAI/diting-ai-skills/issues>
 - 文档站：<https://ditingai.github.io/diting-ai-skills/>
-- API 文档：<https://api.diting.cc/docs>
+- API 文档：<https://diting.cc/api-doc.html>
 
 ## 十一、License
 

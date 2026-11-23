@@ -262,7 +262,7 @@ Have a great example? We'd love to include it! Please:
 ## 🔗 Related Resources
 - [Documentation](../docs/)
 - [CLI Reference](../docs/api/cli-commands.md)
-- [API Documentation](https://api.diting.cc/docs)
+- [API Documentation](https://diting.cc/api-doc.html)
 - [GitHub Repository](https://github.com/DiTingAI/diting-ai-skills)
 
 ---

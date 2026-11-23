@@ -169,6 +169,9 @@ GET /v1/assets/{id}
 
 ```bash
 node scripts/asset_read.js --task-id tsk_20260703_xxxxxxxx
+# 说明：--task-id 与 --video-id 等价；按类型读取支持两种写法
+#   --type summary  等价于  --summary
+#   --type transcript / outline / mindmap / qa / polish / chapters 同理
 ```
 
 或通过 OpenAPI 资产接口：

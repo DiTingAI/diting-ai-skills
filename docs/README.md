@@ -49,7 +49,7 @@ Welcome to the official documentation for Diting AI Skills!
 ## 🔗 Quick Links
 - **Website**: https://diting.cc
 - **GitHub Repository**: https://github.com/diting-ai/diting-ai-skills
-- **API Documentation**: https://api.diting.cc/docs
+- **API Documentation**: https://diting.cc/api-doc.html
 - **Issue Tracker**: https://github.com/diting-ai/diting-ai-skills/issues
 
 ## 📞 Support
@@ -63,4 +63,4 @@ This documentation is licensed under [MIT-0 License](../LICENSE).
 ---
 
 **Last Updated**: 2026-07-06  
-**Version**: 1.0.5
+**Version**: 1.0.6

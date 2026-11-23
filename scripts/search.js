@@ -34,12 +34,23 @@ async function searchKnowledgeBase(options = {}) {
     body: payload
   });
 
+  // 2026-11-24 修正（回归测试发现）：
+  // /api/v1/search 对应后端 KnowledgeBaseController.Chat，响应体是
+  //   { answer, references, task_ids }  —— 没有 code 字段。
+  // 原实现用 `response.code === 0` 判成功，导致每次搜索都返回 success:false（Agent 会误判失败）；
+  // 又把引用来源读成 sources，而真实字段叫 references，于是 sources 恒为空数组。
+  const body = response.data || response;
+
   return {
-    success: response.code === 0,
+    // requestJSON 已在非 2xx 抛错，能走到这里就是请求成功
+    success: true,
     request: payload,
-    answer: response.data?.answer || response.answer || '',
-    sources: response.data?.sources || response.sources || [],
-    total_tokens: response.data?.total_tokens || response.total_tokens || 0
+    answer: body.answer || '',
+    references: body.references || [],
+    // 兼容旧字段名，避免调用方按 sources 取值时拿到 undefined
+    sources: body.references || body.sources || [],
+    task_ids: body.task_ids || [],
+    total_tokens: body.total_tokens || 0
   };
 }
 

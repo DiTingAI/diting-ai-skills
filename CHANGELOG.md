@@ -2,6 +2,51 @@
 
 所有项目的显著变更都将记录在此文件中。
 
+## [1.0.6] - 2026-11-24
+
+> 主题：**回归测试修复**。三个功能性问题，都是 1.0.2 起就存在的既存缺陷，
+> 与 1.0.4 / 1.0.5 的渠道归因改动无关（那两版改动已全部通过回归）。
+
+### 修复
+
+- **`search` 恒返回 `success: false`**
+  `/api/v1/search` 对应后端 `KnowledgeBaseController.Chat`，响应体是
+  `{ answer, references, task_ids }`，**没有 `code` 字段**；原实现判 `response.code === 0`，
+  于是每次搜索都被判为失败，Agent 会据此回「查询失败」。
+  现改为「requestJSON 对非 2xx 已抛错，能走到返回即成功」，同时保留 `code` 兼容分支。
+- **`search` 的引用来源恒为空**
+  真实字段叫 `references`，原代码读 `sources` → 永远拿到空数组。
+  现在同时输出 `references`（新）与 `sources`（兼容旧调用），并补充 `task_ids`。
+- **`asset-read` 按类型读取被静默忽略**
+  SKILL.md 与对外示例写的是 `--task-id … --type summary`，但脚本只认
+  `--video-id` + 布尔开关（`--summary`）。照文档执行会返回整份详情而不是纪要，且不报错。
+  现在两种写法等价：新增 `--type`（transcript / summary / outline / mindmap / qa / polish / chapters），
+  `--task-id` 与 `--video-id` 互为别名；非法 `--type` 会明确报错并列出可选值。
+- **请求超时形同虚设**
+  原 `extraHeaders: { timeout: '600000' }` 只是把 `timeout` 当成一个无意义的 HTTP 头发出去，
+  没有任何超时控制，网络挂起时 CLI 会一直卡住。改为 `AbortSignal.timeout`（纪要 10 分钟），
+  超时给出中文提示（含秒数与 URL）。
+- **`update` 兜底提示的链接不可归因**
+  未支持的更新操作提示里是裸链 `https://diting.cc`，已补 `from` / `c` 参数，与归因规范一致。
+
+### 文档
+
+- API 文档地址更新为 <https://diting.cc/api-doc.html>（旧地址 `api.diting.cc/docs` 已 404），
+  涉及 README / SKILL / CHANGELOG / RELEASE_NOTES / SKILLS_RELEASE_SUMMARY / docs / examples 共 7 处
+- SKILL.md 新增「接口文档（权威出处）」小节：说明官方开放 API `/v1/transcriptions/*` 与本 Skill
+  当前走的网页端兼容通道 `/api/v1/videos/*` 是两套入口，字段有疑问时以实际返回为准
+- references/asset-read.md 补充 `--type` / `--task-id` 两种等价写法的说明
+
+### 回归验证
+
+| 层级 | 结果 |
+|---|---|
+| CLI 命令矩阵（本地 mock，35 条用例） | 31 条正常 + 4 条预期报错；31/31 请求带齐渠道埋点头 |
+| Skills 单测 | 4/4 通过 |
+| Portal 单测 | 72 文件 / 1134 用例通过 |
+| Portal 构建 | 构建成功 + prerender 14/14 + SEO 门禁通过 |
+| API | `go build ./...` + models/middleware 测试通过 |
+
 ## [1.0.5] - 2026-11-23
 
 > 纯文档/打包同步版，**无代码行为变更**（脚本与 1.0.4 完全一致）。
@@ -66,7 +111,7 @@ SkillHub 的「文件」页（README 渲染）读的是**上传包内**的 READM
   线上已可用），将在 1.1.0 接入，而不是回退到旧脚本。
 
 结论：**文案按「当前不支持本地上传」如实描述，等功能接完再写。随时可查的接口清单以
-`https://api.diting.cc/docs` 与 `diting-api/router/router.go` 为准，不要凭记忆判断接口存不存在。**
+`https://diting.cc/api-doc.html` 与 `diting-api/router/router.go` 为准，不要凭记忆判断接口存不存在。**
 
 ## [1.0.3] - 2026-07-18
 

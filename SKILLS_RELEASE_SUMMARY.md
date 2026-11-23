@@ -147,7 +147,7 @@ npm run release:verify
 ## 📞 支持信息
 
 - **项目主页**: https://diting.cc
-- **API文档**: https://api.diting.cc/docs
+- **API文档**: https://diting.cc/api-doc.html
 - **开放平台**: https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill
 - **许可证**: MIT-0 (自由使用、修改、分发)
 

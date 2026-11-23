@@ -81,7 +81,10 @@ async function generateSummary(taskId, config) {
     method: 'POST',
     apiPath: '/api/v1/videos/summary',
     body: { task_id: taskId },
-    extraHeaders: { 'timeout': '600000' }
+    // 2026-11-24：原来写的是 extraHeaders: { timeout: '600000' }，
+    // 它会被当成一个无意义的 HTTP 头发出去，实际并没有任何超时控制。
+    // 改成真正的请求超时（AbortSignal），纪要是长任务，给 10 分钟。
+    timeoutMs: 600000
   });
 
   return response.data || response;

@@ -58,6 +58,15 @@ https://api.diting.cc
 - 请求头：`Authorization: Bearer $DITING_API_KEY`
 - `Content-Type: application/json;charset=UTF-8`
 
+### 接口文档（权威出处）
+
+<https://diting.cc/api-doc.html>（旧地址 `api.diting.cc/docs` 已下线，返回 404）
+
+- 该文档覆盖的是**官方开放 API** `/v1/transcriptions/*`（bilibili / douyin / xhs / upload）与 `/v1/usage`，
+  限流 60 次/分钟、5000 次/天，上传上限 200MB。
+- 本 Skill 当前版本走的是网页端兼容通道 `/api/v1/videos/*`（字段与本文件一致，未在开放 API 文档中列出）；
+  两者鉴权头相同，但额度与限流口径不同。字段有疑问时以实际返回为准，不要按开放 API 文档硬套。
+
 ### 渠道与埋点（不要删、不要改）
 
 本 Skill 的所有请求会自动附带四个头，用于把「用户是从哪个渠道装到的这个 Skill」归因清楚：

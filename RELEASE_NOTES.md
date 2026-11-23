@@ -143,7 +143,7 @@ cp .env.example .env
 ## 🔗 相关链接
 
 - **谛听 AI 官网**: https://diting.cc
-- **API 文档**: https://api.diting.cc/docs
+- **API 文档**: https://diting.cc/api-doc.html
 - **开放平台**: https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill
 
 ---

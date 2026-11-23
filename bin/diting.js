@@ -2,6 +2,7 @@
 
 const {
   apiKeyUrl,
+  buildAttributedUrl,
   channel,
   formatJson,
   parseArgs,
@@ -10,7 +11,7 @@ const {
   getVisitorId
 } = require('../scripts/shared');
 const { transcribe, pollTask, generateSummary, retryVideo, queryVideoList, deleteVideo } = require('../scripts/transcribe');
-const { assetRead, getVideoTranscript, getVideoSummary, getVideoOutline, getVideoMindmap, getVideoQA, getVideoPolish, getVideoChapters } = require('../scripts/asset_read');
+const { assetRead, readByType } = require('../scripts/asset_read');
 const { search, queryVideoList: searchQueryVideoList, getApiKeys, createApiKey, deleteApiKey } = require('../scripts/search');
 const { retryRecord, deleteRecord } = require('../scripts/update_record');
 
@@ -58,30 +59,8 @@ const commandMap = {
     }
     return transcribe(opts);
   },
-  'asset-read': async (opts) => {
-    if (opts['video-id'] && opts.transcript) {
-      return getVideoTranscript(opts);
-    }
-    if (opts['video-id'] && opts.summary) {
-      return getVideoSummary(opts);
-    }
-    if (opts['video-id'] && opts.outline) {
-      return getVideoOutline(opts);
-    }
-    if (opts['video-id'] && opts.mindmap) {
-      return getVideoMindmap(opts);
-    }
-    if (opts['video-id'] && opts.qa) {
-      return getVideoQA(opts);
-    }
-    if (opts['video-id'] && opts.polish) {
-      return getVideoPolish(opts);
-    }
-    if (opts['video-id'] && opts.chapters) {
-      return getVideoChapters(opts);
-    }
-    return assetRead(opts);
-  },
+  // 统一走 readByType：支持 --type summary 与 --summary 两种写法、--task-id 与 --video-id 等价
+  'asset-read': async (opts) => readByType(opts),
   search: async (opts) => {
     if (opts['list-videos']) {
       return searchQueryVideoList(opts);
@@ -104,9 +83,11 @@ const commandMap = {
     if (opts.delete) {
       return deleteRecord(opts);
     }
-    // 其他更新操作（rename, move, update-tags, update-folder）的API不存在
-    // 请使用网页版 https://diting.cc 进行操作
-    throw new Error('该更新功能暂不可用。可用功能: --retry, --delete。请使用网页版 https://diting.cc 进行其他更新操作。');
+    // 其他更新操作（rename, move, update-tags, update-folder）的 API 不存在，请用网页端
+    // 链接必须带渠道归因参数（AGENTS.md 第八节），否则这条兜底提示也是不可归因的流量
+    throw new Error(
+      `该更新功能暂不可用。可用功能: --retry, --delete。其他更新操作请使用网页版：${buildAttributedUrl('/home', { client: 'skill' })}`
+    );
   }
 };
 
@@ -135,9 +116,10 @@ Transcribe Options:
   --delete       Delete video
 
 Asset-Read Options:
-  --task-id      Task ID
+  --task-id      Task ID（与 --video-id 等价，二者任一即可）
   --asset-id     Asset ID
   --video-id     Video ID
+  --type         One of: transcript / summary / outline / mindmap / qa / polish / chapters
   --transcript   Get transcript
   --summary      Get summary
   --outline      Get outline

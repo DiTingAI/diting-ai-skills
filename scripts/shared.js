@@ -102,7 +102,7 @@ async function requestJSONWithRetry({ baseURL, token, method, apiPath, query, bo
   throw lastError;
 }
 
-async function requestJSON({ baseURL, token, method, apiPath, query, body, extraHeaders }) {
+async function requestJSON({ baseURL, token, method, apiPath, query, body, extraHeaders, timeoutMs }) {
   const normalizedMethod = method.toUpperCase();
   const finalQuery = { ...(query || {}) };
   let finalBody = body;
@@ -114,12 +114,26 @@ async function requestJSON({ baseURL, token, method, apiPath, query, body, extra
     headers
   };
 
+  // 真正的超时控制（2026-11-24 补）：此前超时只能靠 fetch 默认行为，
+  // 长任务或网络挂起会把 CLI 卡死。Node 18+ 支持 AbortSignal.timeout。
+  if (timeoutMs && typeof AbortSignal !== 'undefined' && typeof AbortSignal.timeout === 'function') {
+    options.signal = AbortSignal.timeout(timeoutMs);
+  }
+
   if (finalBody !== undefined && normalizedMethod !== 'GET') {
     headers['Content-Type'] = 'application/json;charset=UTF-8';
     options.body = JSON.stringify(finalBody);
   }
 
-  const response = await fetch(url, options);
+  let response;
+  try {
+    response = await fetch(url, options);
+  } catch (fetchError) {
+    if (fetchError && (fetchError.name === 'TimeoutError' || fetchError.name === 'AbortError')) {
+      throw new Error(`请求超时（${Math.round((timeoutMs || 0) / 1000)}s）：${url}`);
+    }
+    throw new Error(`网络请求失败：${fetchError && fetchError.message ? fetchError.message : fetchError}`);
+  }
   const text = await response.text();
 
   let data;

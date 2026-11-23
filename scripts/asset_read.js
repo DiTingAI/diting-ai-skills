@@ -66,7 +66,7 @@ async function getVideoDetails(taskId, config) {
  */
 async function getVideoTranscript(options = {}) {
   const config = getConfig(options);
-  const videoId = options['video-id'];
+  const videoId = options['video-id'] || options['task-id']; // task-id 作为别名：SKILL.md 与多数示例用的是 --task-id
 
   if (!videoId) {
     throw new Error('缺少 --video-id 参数');
@@ -109,7 +109,7 @@ async function getVideoTranscript(options = {}) {
  */
 async function getVideoSummary(options = {}) {
   const config = getConfig(options);
-  const videoId = options['video-id'];
+  const videoId = options['video-id'] || options['task-id']; // task-id 作为别名：SKILL.md 与多数示例用的是 --task-id
 
   if (!videoId) {
     throw new Error('缺少 --video-id 参数');
@@ -131,7 +131,7 @@ async function getVideoSummary(options = {}) {
  */
 async function getVideoOutline(options = {}) {
   const config = getConfig(options);
-  const videoId = options['video-id'];
+  const videoId = options['video-id'] || options['task-id']; // task-id 作为别名：SKILL.md 与多数示例用的是 --task-id
 
   if (!videoId) {
     throw new Error('缺少 --video-id 参数');
@@ -152,7 +152,7 @@ async function getVideoOutline(options = {}) {
  */
 async function getVideoMindmap(options = {}) {
   const config = getConfig(options);
-  const videoId = options['video-id'];
+  const videoId = options['video-id'] || options['task-id']; // task-id 作为别名：SKILL.md 与多数示例用的是 --task-id
 
   if (!videoId) {
     throw new Error('缺少 --video-id 参数');
@@ -173,7 +173,7 @@ async function getVideoMindmap(options = {}) {
  */
 async function getVideoQA(options = {}) {
   const config = getConfig(options);
-  const videoId = options['video-id'];
+  const videoId = options['video-id'] || options['task-id']; // task-id 作为别名：SKILL.md 与多数示例用的是 --task-id
 
   if (!videoId) {
     throw new Error('缺少 --video-id 参数');
@@ -194,7 +194,7 @@ async function getVideoQA(options = {}) {
  */
 async function getVideoPolish(options = {}) {
   const config = getConfig(options);
-  const videoId = options['video-id'];
+  const videoId = options['video-id'] || options['task-id']; // task-id 作为别名：SKILL.md 与多数示例用的是 --task-id
 
   if (!videoId) {
     throw new Error('缺少 --video-id 参数');
@@ -215,7 +215,7 @@ async function getVideoPolish(options = {}) {
  */
 async function getVideoChapters(options = {}) {
   const config = getConfig(options);
-  const videoId = options['video-id'];
+  const videoId = options['video-id'] || options['task-id']; // task-id 作为别名：SKILL.md 与多数示例用的是 --task-id
 
   if (!videoId) {
     throw new Error('缺少 --video-id 参数');
@@ -230,52 +230,50 @@ async function getVideoChapters(options = {}) {
   };
 }
 
+/**
+ * 按类型读取（2026-11-24 新增 --type 支持）
+ *
+ * 背景：SKILL.md 与对外示例写的是 `--task-id ... --type summary`，
+ * 但脚本此前只认 `--video-id ... --summary` 这种布尔开关，
+ * 于是 `--type summary` 会被静默忽略、返回整份详情——用户以为拿到了纪要，其实拿到的是全部字段。
+ * 现在两种写法都支持，`--type` 与布尔开关等价，`--task-id` 与 `--video-id` 等价。
+ */
+const TYPE_HANDLERS = {
+  transcript: getVideoTranscript,
+  summary: getVideoSummary,
+  outline: getVideoOutline,
+  mindmap: getVideoMindmap,
+  qa: getVideoQA,
+  polish: getVideoPolish,
+  chapters: getVideoChapters
+};
+
+async function readByType(options = {}) {
+  const videoId = options['video-id'] || options['task-id'];
+  const typeKey = typeof options.type === 'string' ? options.type.trim().toLowerCase() : '';
+
+  if (videoId && typeKey) {
+    const handler = TYPE_HANDLERS[typeKey];
+    if (!handler) {
+      throw new Error(`不支持的 --type: ${typeKey}（可选：${Object.keys(TYPE_HANDLERS).join(' / ')}）`);
+    }
+    return handler(options);
+  }
+
+  if (videoId) {
+    for (const [key, handler] of Object.entries(TYPE_HANDLERS)) {
+      if (options[key]) {
+        return handler(options);
+      }
+    }
+  }
+
+  return assetRead(options);
+}
+
 async function main() {
   const args = parseArgs(process.argv.slice(2));
-
-  if (args['video-id'] && args.transcript) {
-    const result = await getVideoTranscript(args);
-    console.log(formatJson(result));
-    return;
-  }
-
-  if (args['video-id'] && args.summary) {
-    const result = await getVideoSummary(args);
-    console.log(formatJson(result));
-    return;
-  }
-
-  if (args['video-id'] && args.outline) {
-    const result = await getVideoOutline(args);
-    console.log(formatJson(result));
-    return;
-  }
-
-  if (args['video-id'] && args.mindmap) {
-    const result = await getVideoMindmap(args);
-    console.log(formatJson(result));
-    return;
-  }
-
-  if (args['video-id'] && args.qa) {
-    const result = await getVideoQA(args);
-    console.log(formatJson(result));
-    return;
-  }
-
-  if (args['video-id'] && args.polish) {
-    const result = await getVideoPolish(args);
-    console.log(formatJson(result));
-    return;
-  }
-
-  if (args['video-id'] && args.chapters) {
-    const result = await getVideoChapters(args);
-    console.log(formatJson(result));
-    return;
-  }
-
-  const result = await assetRead(args);
+  const result = await readByType(args);
   console.log(formatJson(result));
 }
 
@@ -288,6 +286,7 @@ if (require.main === module) {
 
 module.exports = {
   assetRead,
+  readByType,
   getVideoTranscript,
   getVideoSummary,
   getVideoOutline,
