@@ -63,4 +63,4 @@ This documentation is licensed under [MIT-0 License](../LICENSE).
 ---
 
 **Last Updated**: 2026-07-06  
-**Version**: 1.0.4
+**Version**: 1.0.5

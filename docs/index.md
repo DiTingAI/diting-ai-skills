@@ -130,7 +130,7 @@ Need help? Check out our resources:
 ---
 
 **Last Updated**: 2026-07-06  
-**Version**: 1.0.4  
+**Version**: 1.0.5  
 **License**: [MIT-0 License](https://github.com/DiTingAI/diting-ai-skills/blob/main/LICENSE)
 
 <style>

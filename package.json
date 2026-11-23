@@ -1,6 +1,6 @@
 {
   "name": "diting-skills",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "谛听 AI Skills - 解析 B 站视频链接（含多P / 合集批量）创建转写任务，查询状态，读取原文与纪要，并检索私有知识库。",
   "main": "./bin/diting.js",
   "license": "MIT-0",
