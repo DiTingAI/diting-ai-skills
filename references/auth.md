@@ -48,7 +48,7 @@ Accept: application/json, text/plain, */*
 
 ## API Key 获取
 
-访问 [谛听 AI 开放平台](https://diting.cc/home/apikey) 获取 API Key。
+访问 [谛听 AI 开放平台](https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill) 获取 API Key。
 
 ---
 

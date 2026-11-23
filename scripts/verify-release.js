@@ -12,7 +12,9 @@ const { execSync } = require('child_process');
 console.log('🔍 验证谛听 AI Skills 发布包...\n');
 
 const projectRoot = path.resolve(__dirname, '..');
-const zipFilePath = path.join(projectRoot, 'dist', 'diting-skills-v1.0.1-skill.zip');
+const packageJson = require(path.join(projectRoot, 'package.json'));
+// 版本号从 package.json 取，避免校验脚本自己写死一个旧版本号（历史上就写死过 1.0.1）
+const zipFilePath = path.join(projectRoot, 'dist', `diting-skills-v${packageJson.version}-skill.zip`);
 
 // 检查ZIP文件是否存在
 if (!fs.existsSync(zipFilePath)) {
@@ -138,7 +140,7 @@ try {
   console.log('\n🎉 发布包验证通过！');
   console.log('\n📋 发布包包含:');
   console.log('  • 完整的源代码和脚本');
-  console.log('  • 预编译的二进制文件');
+  console.log('  • 渠道归因模块 scripts/channel.js');
   console.log('  • 完整的API参考文档');
   console.log('  • 使用指南和Skill说明');
   console.log('  • 环境配置示例');

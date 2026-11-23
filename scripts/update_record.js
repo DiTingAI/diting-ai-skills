@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const {
+  buildAttributedUrl,
   formatJson,
   getConfig,
   parseArgs,
@@ -87,7 +88,7 @@ async function main() {
   console.error('  - 移动视频到文件夹 (move)');
   console.error('  - 更新视频标签 (update-tags)');
   console.error('  - 更新视频文件夹 (update-folder)');
-  console.error('\n请使用网页版 diting.cc 进行这些操作。');
+  console.error(`\n请使用网页版进行这些操作：${buildAttributedUrl('/home', { client: 'skill' })}`);
   console.error('\n可用的功能:');
   console.error('  --retry --id <id>     重试视频处理');
   console.error('  --delete --id <id>    删除视频');

@@ -229,7 +229,7 @@ done
 
 1. **Clone the repository** (if you haven't already):
    ```bash
-   git clone https://github.com/diting-ai/diting-skills.git
+   git clone https://github.com/DiTingAI/diting-ai-skills.git
    cd diting-skills/examples
    ```
 
@@ -263,8 +263,8 @@ Have a great example? We'd love to include it! Please:
 - [Documentation](../docs/)
 - [CLI Reference](../docs/api/cli-commands.md)
 - [API Documentation](https://api.diting.cc/docs)
-- [GitHub Repository](https://github.com/diting-ai/diting-skills)
+- [GitHub Repository](https://github.com/DiTingAI/diting-ai-skills)
 
 ---
 
-**Need Help?** Check out our [FAQ](../docs/faq/common-issues.md) or [open an issue](https://github.com/diting-ai/diting-skills/issues).
+**Need Help?** Check out our [FAQ](../docs/faq/common-issues.md) or [open an issue](https://github.com/DiTingAI/diting-ai-skills/issues).

@@ -7,7 +7,7 @@
 ### 1. 克隆项目
 
 ```bash
-git clone https://github.com/diting-ai/diting-skills.git
+git clone https://github.com/DiTingAI/diting-ai-skills.git
 cd diting-skills
 ```
 

@@ -9,11 +9,11 @@
 **场景**: API Key 未配置或无效
 
 ```bash
-错误: 缺少环境变量 DITING_API_KEY，请访问 https://diting.cc/home/apikey 获取
+错误: 缺少环境变量 DITING_API_KEY，请访问 https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill 获取
 ```
 
 **解决方法**:
-1. 获取 API Key: https://diting.cc/home/apikey
+1. 获取 API Key: https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill
 2. 设置环境变量: `export DITING_API_KEY=your-api-key`
 3. 验证配置: `diting --help` 应正常显示
 
@@ -38,7 +38,7 @@
 **场景**: API Key 无效或过期
 
 ```bash
-错误: API Key 无效或已过期，请访问 https://diting.cc/home/apikey 重新获取
+错误: API Key 无效或已过期，请访问 https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill 重新获取
 ```
 
 **解决方法**:
@@ -231,7 +231,7 @@ diting update --id task_id --delete
 ## 常见问题解答
 
 ### Q1: API Key 在哪里获取？
-A: 访问 https://diting.cc/home/apikey 注册并获取 API Key。
+A: 访问 https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill 注册并获取 API Key。
 
 ### Q2: 支持的最大文件大小是多少？
 A: 当前支持最大 2GB 的文件上传。

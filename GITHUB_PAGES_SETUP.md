@@ -27,7 +27,7 @@
 ### 方法 1: GitHub Web 界面（推荐）
 
 1. **访问仓库设置**
-   - 打开 https://github.com/diting-ai/diting-skills
+   - 打开 https://github.com/DiTingAI/diting-ai-skills
    - 点击 **Settings** 选项卡
    - 左侧菜单找到 **Pages**
 
@@ -41,7 +41,7 @@
    - 查看部署状态：**Actions** → **Deploy to GitHub Pages**
 
 4. **访问网站**
-   - 部署成功后访问：https://diting-ai.github.io/diting-skills/
+   - 部署成功后访问：https://ditingai.github.io/diting-skills/
 
 ### 方法 2: GitHub CLI
 
@@ -57,13 +57,13 @@ gh auth login
 gh api \
   --method POST \
   -H "Accept: application/vnd.github.v3+json" \
-  /repos/diting-ai/diting-skills/pages \
+  /repos/DiTingAI/diting-ai-skills/pages \
   -f source='{"branch":"main","path":"/docs"}'
 ```
 
 ## 🔗 网站地址
 
-- **GitHub Pages URL**: https://diting-ai.github.io/diting-skills/
+- **GitHub Pages URL**: https://ditingai.github.io/diting-skills/
 - **自定义域名**（可选）：可配置为 docs.diting.cc 等
 
 ## 📁 文档结构
@@ -210,6 +210,6 @@ default_lang: "en"
 **状态**: ✅ 配置完成  
 **下一步**: 在 GitHub 仓库设置中启用 GitHub Pages  
 **预计时间**: 2-3 分钟  
-**访问地址**: https://diting-ai.github.io/diting-skills/  
+**访问地址**: https://ditingai.github.io/diting-skills/  
 
 **最后更新**: 2026-07-06

@@ -8,7 +8,8 @@ console.log('🚀 运行谛听 AI Skills 测试套件\n');
 // 测试文件列表
 const testFiles = [
   'shared.test.js',
-  'config.test.js', 
+  'config.test.js',
+  'channel.test.js',
   'cli.test.js'
 ];
 

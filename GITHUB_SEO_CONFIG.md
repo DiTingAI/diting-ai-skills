@@ -56,7 +56,7 @@ User-agent: *
 Disallow: /_next/
 Disallow: /api/
 
-Sitemap: https://diting-ai.github.io/diting-ai-skills/sitemap.xml
+Sitemap: https://ditingai.github.io/diting-ai-skills/sitemap.xml
 ```
 
 ### 2. sitemap.xml

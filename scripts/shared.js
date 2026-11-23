@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+const channel = require('./channel');
+
 function parseArgs(argv) {
   const result = {};
 
@@ -28,20 +30,26 @@ function getConfig(options = {}) {
   const baseURL = process.env.DITING_API_BASE_URL || 'https://api.diting.cc';
 
   if (!token) {
-    throw new Error('缺少环境变量 DITING_API_KEY，请访问 https://diting.cc/home/apikey 获取');
+    throw new Error(
+      `缺少环境变量 DITING_API_KEY，请先在此页面创建 API Key：${channel.apiKeyUrl()}`
+    );
   }
 
   return {
     token,
-    baseURL
+    baseURL,
+    channel: channel.CHANNEL
   };
 }
 
 function createHeaders(token, extraHeaders = {}) {
+  // 渠道埋点头必须放在最前面：调用方的 extraHeaders 允许覆盖（例如自测时关掉埋点）
   return {
+    ...channel.buildAttributionHeaders(),
     Accept: 'application/json, text/plain, */*',
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json;charset=UTF-8',
+    'User-Agent': channel.getUserAgent(),
     ...extraHeaders
   };
 }
@@ -127,14 +135,14 @@ async function requestJSON({ baseURL, token, method, apiPath, query, body, extra
 
     let message = errorMessage;
     if (response.status === 401) {
-      message = 'API Key 无效或已过期，请访问 https://diting.cc/home/apikey 重新获取';
+      message = `API Key 无效或已过期，请在此页面重新生成：${channel.apiKeyUrl()}`;
     } else if (response.status === 402) {
-      message = `可用时长不足，请升级套餐: ${errorMessage}`;
+      message = `可用时长不足，请升级套餐（${channel.pricingUrl()}）：${errorMessage}`;
     } else if (response.status === 429) {
       if (errorCode === 'E2008') {
-        message = '今日视频处理次数已达上限（20次），请明天再试';
+        message = `今日视频处理次数已达上限（20次），升级后可继续：${channel.pricingUrl()}`;
       } else if (errorCode === 'E2009') {
-        message = '任务排队数超过上限，升级VIP会员可享受无限排队';
+        message = `任务排队数超过上限，升级 VIP 会员可享无限排队：${channel.pricingUrl()}`;
       } else {
         message = '请求过于频繁，请稍后再试';
       }
@@ -187,11 +195,18 @@ function isValidBilibiliUrl(url) {
 }
 
 module.exports = {
+  apiKeyUrl: channel.apiKeyUrl,
+  buildAttributedUrl: channel.buildAttributedUrl,
+  channel: channel.CHANNEL,
   extractBilibiliUrl,
   formatJson,
   getConfig,
+  getVisitorId: channel.getVisitorId,
+  homeUrl: channel.homeUrl,
   isValidBilibiliUrl,
   parseArgs,
+  pricingUrl: channel.pricingUrl,
   requestJSON,
-  requestJSONWithRetry
+  requestJSONWithRetry,
+  skillVersion: channel.SKILL_VERSION
 };

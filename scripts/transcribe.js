@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const {
+  buildAttributedUrl,
   formatJson,
   getConfig,
   parseArgs,
@@ -243,7 +244,10 @@ async function transcribe(options = {}) {
       taskIds,
       videoInfo,
       submittedVideos: videosPayload,
-      response: task
+      response: task,
+      // 二次转化入口：命令行只做「提交 + 取文本」，大纲/思维导图/问答/文件夹管理
+      // 都在网页端，把 Agent 的用户导回带渠道归因的落地页（from/c 见 scripts/channel.js）
+      portal_url: buildAttributedUrl('/skills', { client: 'skill' })
     };
   }
 }

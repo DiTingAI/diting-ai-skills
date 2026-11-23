@@ -16,14 +16,14 @@ Diting AI Skills is a powerful CLI tool that allows you to:
 ## 🚀 5-Minute Setup
 
 ### Step 1: Get Your API Key
-1. Visit [Diting AI Platform](https://diting.cc/home/apikey)
+1. Visit [Diting AI Platform](https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill)
 2. Click "Get API Key"
 3. Copy your API Key
 
 ### Step 2: Install Diting AI Skills
 ```bash
 # One-line installation
-curl -sSL https://raw.githubusercontent.com/diting-ai/diting-skills/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/DiTingAI/diting-ai-skills/main/install.sh | bash
 ```
 
 ### Step 3: Configure API Key
@@ -101,9 +101,12 @@ diting search --query "meeting notes" --type video
 ### For XiaoLongXia Assistant
 Send this prompt to XiaoLongXia:
 ```
-请安装谛听 AI Skills 功能，下载地址：https://cdn.diting.cc/assets/diting-skills-1.0.1.zip，并发送给小龙虾、Cursor、Claude、Codex 等主流 Agent，按提示即可自动安装。
+帮我安装「谛听 AI Skills」，执行下面这条命令即可（不要下载 zip 包）：
+curl -sSL https://raw.githubusercontent.com/DiTingAI/diting-ai-skills/main/install.sh | bash
 
-在页面最上方点击「获取 API Key」，完成后把生成的 Key 发给小龙虾，即可完成鉴权并开始使用。
+装完给我这个链接拿 API Key：https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill
+我把 Key 发给你之后，执行 export DITING_API_KEY=<Key>，再用 diting config 自查，最后用
+diting transcribe --url "<B站链接>" 转写。全程不要把完整 Key 回显出来。
 ```
 
 ### Quick Commands for AI Assistants
@@ -178,7 +181,7 @@ diting search --help
 ```
 
 ### Common Issues
-- **API Key not working**: Get a new key from https://diting.cc/home/apikey
+- **API Key not working**: Get a new key from https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill
 - **Network issues**: Check your internet connection and firewall settings
 - **Command not found**: Make sure installation directory is in PATH
 
@@ -186,7 +189,7 @@ diting search --help
 - Read the [Basic Usage Guide](basic-usage.md) for detailed instructions
 - Explore [Advanced Features](../guides/advanced-features.md)
 - Check out [Integration Examples](../examples/)
-- Join our [Community Discussions](https://github.com/diting-ai/diting-skills/discussions)
+- Join our [Community Discussions](https://github.com/DiTingAI/diting-ai-skills/discussions)
 
 ---
 

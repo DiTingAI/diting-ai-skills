@@ -87,7 +87,7 @@ Get started with Diting AI Skills in just a few minutes:
 ## 🔗 Quick Links
 
 <div class="quick-links">
-  <a href="https://github.com/diting-ai/diting-skills" class="btn">GitHub Repository</a>
+  <a href="https://github.com/DiTingAI/diting-ai-skills" class="btn">GitHub Repository</a>
   <a href="/api/cli-commands" class="btn">CLI Reference</a>
   <a href="/guides/quick-start" class="btn">Quick Start</a>
   <a href="/faq/common-issues" class="btn">FAQ</a>
@@ -130,8 +130,8 @@ Need help? Check out our resources:
 ---
 
 **Last Updated**: 2026-07-06  
-**Version**: 1.0.1  
-**License**: [MIT-0 License](https://github.com/diting-ai/diting-skills/blob/main/LICENSE)
+**Version**: 1.0.4  
+**License**: [MIT-0 License](https://github.com/DiTingAI/diting-ai-skills/blob/main/LICENSE)
 
 <style>
 .features-grid {

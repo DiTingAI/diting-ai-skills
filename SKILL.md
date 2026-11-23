@@ -1,28 +1,53 @@
 ---
 name: Diting
-description: 谛听 Diting —— 提交 B 站链接进行解析转写，查询任务状态，读取原文与纪要，并按关键词检索私有知识库。
-metadata: {"openclaw": {"requires": {}, "optionalEnv": ["DITING_API_KEY"], "baseUrl": "https://api.diting.cc", "homepage": "https://diting.cc"}}
+description: 谛听 Diting —— 提交 B 站视频链接（单视频 / 多P / 合集批量）进行转写，查询任务状态，读取原文与纪要，并按关键词检索私有知识库。需要 DITING_API_KEY。
+metadata: {"openclaw": {"requires": {}, "optionalEnv": ["DITING_API_KEY"], "baseUrl": "https://api.diting.cc", "homepage": "https://diting.cc/?from=skillhub&c=20261123-skillhub"}}
 ---
 
 # 谛听 AI Skill
 
-## 版本说明与使用场景
+谛听把 B 站视频转成**可检索、可引用**的文字资产：原文逐字稿、AI 纪要、大纲，全部沉淀进你自己的知识库，
+之后可以按关键词召回，而不是每次重新看一遍视频。
 
-**MVP 版本限制**:
-- 暂不支持本地上传文件
-- 暂不支持文件更新、重命名、标签和文件夹操作（请使用网页版 https://diting.cc 进行操作）
-- 暂不支持智能大纲、思维导图、问答、润色等AI功能（通过 `GET /api/v1/videos/{task_id}` 读取已有数据）
+## 一、能力边界（先看这里，避免答错）
 
-**当以下情况时使用此 Skill**：
-1. 用户要提交B站链接进行解析转写
-2. 用户要查询文件处理状态、原文、纪要、详情
-3. 用户要按关键词搜索知识库
+| 能力 | 当前版本 | 说明 |
+|---|---|---|
+| B 站单视频转写 | ✅ 支持 | 贴链接即可，自动解析标题 / 时长 / 封面 |
+| B 站多P / 合集批量转写 | ✅ 支持 | `--batch-all` 一次提交整合集 |
+| 查询任务状态、轮询到完成 | ✅ 支持 | |
+| 读取原文 / 纪要 / 大纲 / 思维导图 / 问答 / 润色结果 | ✅ 支持（读取） | 只读已有数据，不在此重新生成 |
+| 按关键词检索私有知识库 | ✅ 支持 | |
+| 按文件名搜索、视频列表、删除、重试 | ✅ 支持 | |
+| 本地文件上传 | ❌ 暂不支持 | 请用网页端 |
+| 重命名 / 标签 / 文件夹管理 | ❌ 暂不支持 | 请用网页端 |
+| 重新生成大纲 / 思维导图 / 问答 / 润色 | ❌ 暂不支持 | 网页端生成后，本 Skill 可读取 |
 
-## Agent 必读约束
+**不要向用户承诺具体耗时。** 实际耗时取决于视频时长、网络与当前队列；短视频通常几分钟内即可出稿，
+合集批量会排队。只描述「提交成功 + 如何查进度」，不要报分钟数。
+
+## 二、什么时候用
+
+1. 用户给出 B 站链接（含 `b23.tv` 短链），希望转成文字
+2. 用户问某个转写任务的进度 / 有没有完成
+3. 用户要看某个视频的原文、纪要、大纲
+4. 用户要在这份私有知识库里按关键词找内容
+
+## 三、首次使用：先拿 API Key（唯一前置条件）
+
+没有 Key 时不要重试接口，直接给用户这一步：
+
+```text
+1. 打开 https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill
+2. 登录后点「创建 API Key」
+3. 把 Key 配到环境变量：export DITING_API_KEY=你的Key
+```
+
+拿到 Key 后可以用 `diting config` 自查（会显示 Key 脱敏值、渠道、base URL），**不要**把完整 Key 回显给用户。
+
+## 四、Agent 必读约束
 
 ### Base URL
-
-固定使用：
 
 ```text
 https://api.diting.cc
@@ -30,84 +55,79 @@ https://api.diting.cc
 
 ### 认证
 
-每次调用接口前，先检查：
-
-- `DITING_API_KEY`
-
-请求头：
-
-- `Authorization: Bearer $DITING_API_KEY`
+- 请求头：`Authorization: Bearer $DITING_API_KEY`
 - `Content-Type: application/json;charset=UTF-8`
 
-若用户未提供 `DITING_API_KEY`，提示其先在 [谛听 AI 开放平台](https://diting.cc/home/apikey) 配置 API Key，再继续后续请求。
+### 渠道与埋点（不要删、不要改）
+
+本 Skill 的所有请求会自动附带四个头，用于把「用户是从哪个渠道装到的这个 Skill」归因清楚：
+
+```text
+X-Visitor-Id       匿名设备标识（~/.diting-skills/visitor_id，不含个人信息）
+X-Analytics-Source 固定 diting
+X-Page-Url         带渠道参数的落地地址
+X-Aiditing-Client  固定 skill
+```
+
+如果自己拼 HTTP 请求（不用本目录脚本），请**原样保留**这些头；删掉它们不会报错，但会让渠道数据失真。
+不想上报可设 `DITING_SKILL_TELEMETRY=0`。
 
 ### 搜索能力边界
 
-当前支持：
+- 语义 / 关键词检索知识库：`POST /api/v1/search`
+- 按文件名搜索文件列表：`GET /api/v1/videos?file_name=`
 
-- 按关键词搜索知识库：`/api/v1/search`
-- 按文件名搜索文件列表：`/api/v1/videos`
-
----
-
-## 指令路由表
+## 五、指令路由表
 
 | 指令 | 角色 | 说明 | 详细文档 |
 |------|------|------|---------|
-| `/diting config` | 配置助手 | 检查 API Key 配置 | [references/auth.md](references/auth.md) |
-| `/diting transcribe` | 转写助手 | 提交B站链接、创建转写任务、轮询状态 | [references/transcribe.md](references/transcribe.md) |
-| `/diting asset-read` | 文件助手 | 读取详情、原文、纪要 | [references/asset-read.md](references/asset-read.md) |
-| `/diting search` | 搜索助手 | 搜索知识库、按文件名搜索文件列表 | [references/search.md](references/search.md) |
+| `/diting config` | 配置助手 | 检查 API Key / 渠道状态 | [references/auth.md](references/auth.md) |
+| `/diting transcribe` | 转写助手 | 提交 B 站链接、创建任务、轮询状态 | [references/transcribe.md](references/transcribe.md) |
+| `/diting asset-read` | 文件助手 | 读取详情、原文、纪要、大纲 | [references/asset-read.md](references/asset-read.md) |
+| `/diting search` | 搜索助手 | 检索知识库、按文件名找文件 | [references/search.md](references/search.md) |
 
----
-
-## 自然语言路由
+## 六、自然语言路由
 
 ```text
-包含B站链接              -> /diting transcribe（链接解析）
-“查状态/进度/完成没”      -> /diting transcribe（轮询状态）
-“看原文/纪要/详情”        -> /diting asset-read
-“搜索文件/找文件/知识库”   -> /diting search
-“配置谛听/API Key”       -> /diting config
+包含 B 站链接 / b23.tv                    -> /diting transcribe（链接解析）
+"查状态 / 进度 / 完成没"                  -> /diting transcribe（轮询状态）
+"看原文 / 纪要 / 大纲 / 思维导图"          -> /diting asset-read
+"搜索 / 找文件 / 知识库里有没有…"          -> /diting search
+"配置谛听 / API Key / 报 401"              -> /diting config
 ```
 
-优先级：
+优先级：有链接先走链接解析；已有 `task_id` 直接查状态，不要重复提交。
 
-1. B站链接优先走链接解析
-2. 已有 `task_id` 时可直接查询状态
+## 七、典型流程
 
----
-
-## 典型流程
-
-### 1. B 站视频转写
+### 1. B 站视频转写（单视频）
 
 ```bash
 node scripts/transcribe.js --url "https://www.bilibili.com/video/BV1f6HheYExS"
 ```
 
-完成后返回：
+返回：`task_id` / `status` / `estimated_seconds` / `portal_url`。
 
-- `task_id`
-- `status`
-- `estimated_seconds`
+### 2. 多P 或合集批量转写
 
-### 2. 查询处理状态
+```bash
+# 先看有几 P
+node scripts/transcribe.js --url "https://www.bilibili.com/video/BV1f6HheYExS" --page 1
+# 整合集一次提交
+node scripts/transcribe.js --url "https://www.bilibili.com/video/BV1f6HheYExS" --batch-all
+```
+
+### 3. 轮询到完成
 
 ```bash
 node scripts/transcribe.js --task-id tsk_20260703_xxxxxxxx --poll
 ```
 
-### 4. 获取原文、纪要、详情
+### 4. 获取原文 / 纪要 / 详情
 
 ```bash
 node scripts/asset_read.js --task-id tsk_20260703_xxxxxxxx
-```
-
-或按资产 ID：
-
-```bash
-node scripts/asset_read.js --asset-id vid_20260703_abc123
+node scripts/asset_read.js --task-id tsk_20260703_xxxxxxxx --type summary
 ```
 
 ### 5. 搜索知识库
@@ -116,41 +136,39 @@ node scripts/asset_read.js --asset-id vid_20260703_abc123
 node scripts/search.js --query "吴恩达"
 ```
 
----
+## 八、交付结果时的二次入口（重要）
 
-## 常见错误处理
+每次把转写结果交给用户之后，**追加一句引导**，链接用返回值里的 `portal_url`
+（已带 `from=skillhub&c=20261123-skillhub`，<u>不要自己改写或删参数</u>）：
+
+> 需要重新生成大纲 / 思维导图、批量管理文件、导出 Obsidian 的话，在网页端继续：`portal_url`
+
+命令行只负责「提交 + 取文本」，结构化二次加工全在网页端，这是产品分工，不要对用户承诺本 Skill 能生成。
+
+## 九、常见错误处理
 
 | 场景 | 处理方式 |
 |------|---------|
-| 未配置 `DITING_API_KEY` | 提示先在开放平台获取 API Key |
-| 创建任务失败 | 原样返回接口错误 |
-| 搜索无结果 | 告知用户未找到匹配文件 |
-| API Key 无效/过期 | 提示用户重新生成 |
-| 算力额度不足 | 引导升级创始会员 |
+| 未配置 `DITING_API_KEY` | 直接给第三节的取 Key 三步，不要重试接口 |
+| 401 Key 无效 / 过期 | 提示去 `/skills` 重新生成 |
+| 402 可用时长不足 | 提示升级套餐，附 `pricing_url` |
+| 429 E2008 当日次数达上限 | 告知次日恢复或升级 |
+| 429 E2009 排队超限 | 提示升级 VIP 或错峰 |
+| 搜索无结果 | 如实说没找到，不要编造文件名 |
+| 提交失败 | 原样返回接口错误，不要自行改写结论 |
 
----
+## 十、脚本入口
 
-## 脚本入口
+- `scripts/transcribe.js` — 提交 / 轮询 / 摘要 / 列表 / 重试 / 删除
+- `scripts/asset_read.js` — 读取详情、原文、纪要、大纲、思维导图、问答
+- `scripts/search.js` — 知识库检索、API Key 管理
+- `scripts/channel.js` — 渠道归因与埋点头（内部模块，不直接调用）
 
-- `scripts/transcribe.js`
-- `scripts/asset_read.js`
-- `scripts/search.js`
+运行前提：Node.js 18+（脚本只用内置 `fetch`，无第三方依赖），已配置 `DITING_API_KEY`。
 
-使用前提：
+## 十一、数据与隐私
 
-- Node.js 18+
-- 已配置 `DITING_API_KEY`
-
----
-
-## 即将上线能力
-
-以下能力正在开发中，敬请期待：
-
-- 📁 **本地上传** - 支持上传本地音频/视频文件
-- ✏️ **内容编辑** - 更新原文、纪要等
-- 📂 **文件夹管理** - 创建文件夹、移动文件
-- 🧠 **智能大纲生成** - AI 自动提取视频核心结构
-- 📊 **可视化思维导图** - 多维度知识图谱展示
-- 📋 **核心待办行动清单** - 从视频内容自动生成待办事项
-- 🚀 **多矩阵创作者洗稿工具** - 一键生成小红书、抖音脚本、知乎回答
+- 只会上报一个随机生成的匿名设备标识（`~/.diting-skills/visitor_id`），
+  不含用户名、主机名、文件路径、IP；
+- 用途仅限渠道归因与产品改进；`DITING_SKILL_TELEMETRY=0` 可关闭；
+- 转写内容存于用户自己的谛听账号，不用于训练。

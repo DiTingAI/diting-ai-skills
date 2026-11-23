@@ -113,7 +113,7 @@ npm run release:verify
 | `/diting asset-read` | 资产读取 | 获取原文、纪要、文件详情 |
 | `/diting search` | 知识库搜索 | 搜索文件和知识库内容 |
 
-> ⚠️ **已移除功能**：听悟（Tingwu）音频转写（原 `/diting transcribe --tingwu` / `scripts/upload.js`）因服务端无对应接口，已在 v1.0.3 清理中整体移除。
+> ⚠️ **已移除功能**：听悟（Tingwu）音频转写（原 `/diting transcribe --tingwu` / `scripts/upload.js`）已在 v1.0.3 清理中移除（⚠️ 当时的判断依据有误，服务端接口一直存在，详见 CHANGELOG 1.0.4「勘误」）。
 
 ## 🎯 技术规格
 
@@ -148,7 +148,7 @@ npm run release:verify
 
 - **项目主页**: https://diting.cc
 - **API文档**: https://api.diting.cc/docs
-- **开放平台**: https://diting.cc/home/apikey
+- **开放平台**: https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill
 - **许可证**: MIT-0 (自由使用、修改、分发)
 
 ---

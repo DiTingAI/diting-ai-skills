@@ -40,7 +40,7 @@ Before starting, ensure you have:
 
 5. **Access your site**
    - Your site will be available at: `https://[your-username].github.io/diting-skills/`
-   - Or: `https://diting-ai.github.io/diting-skills/` (for organization repos)
+   - Or: `https://ditingai.github.io/diting-skills/` (for organization repos)
 
 ### Option 2: Using GitHub CLI
 
@@ -62,7 +62,7 @@ gh auth login
 gh api \
   --method POST \
   -H "Accept: application/vnd.github.v3+json" \
-  /repos/diting-ai/diting-skills/pages \
+  /repos/DiTingAI/diting-ai-skills/pages \
   -f source='{"branch":"main","path":"/docs"}'
 ```
 
@@ -192,7 +192,7 @@ Trigger deployment manually:
 Check deployment status:
 - **Actions** tab → **Deploy to GitHub Pages** workflow
 - **Settings** → **Pages** → View recent deployments
-- Visit `https://github.com/diting-ai/diting-skills/deployments`
+- Visit `https://github.com/DiTingAI/diting-ai-skills/deployments`
 
 ## 🛠️ Local Development
 
@@ -365,7 +365,7 @@ If you encounter issues with GitHub Pages setup:
 ## 🎉 Success!
 
 Once configured, your documentation will be available at:
-**https://diting-ai.github.io/diting-skills/**
+**https://ditingai.github.io/diting-skills/**
 
 The site will automatically update whenever you push changes to the `main` branch.
 

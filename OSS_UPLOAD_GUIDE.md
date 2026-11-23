@@ -87,7 +87,7 @@ curl -X PUT \
 
 ```bash
 # 测试一键安装
-curl -sSL https://raw.githubusercontent.com/diting-ai/diting-skills/main/install.sh | bash -s -- --test
+curl -sSL https://raw.githubusercontent.com/DiTingAI/diting-ai-skills/main/install.sh | bash -s -- --test
 
 # 测试手动安装
 wget https://cdn.diting.cc/assets/diting-skills-1.0.1.zip
@@ -113,9 +113,9 @@ cd diting-skills-1.0.1
 
 ## 🔗 相关链接
 
-- **GitHub 仓库**: https://github.com/diting-ai/diting-skills
-- **安装脚本**: https://raw.githubusercontent.com/diting-ai/diting-skills/main/install.sh
-- **API Key 获取**: https://diting.cc/home/apikey
+- **GitHub 仓库**: https://github.com/DiTingAI/diting-ai-skills
+- **安装脚本**: https://raw.githubusercontent.com/DiTingAI/diting-ai-skills/main/install.sh
+- **API Key 获取**: https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill
 - **官方文档**: https://diting.cc/home/skills
 
 ## ⚠️ 注意事项

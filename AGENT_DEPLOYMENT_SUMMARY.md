@@ -77,15 +77,15 @@ https://cdn.diting.cc/assets/diting-skills-1.0.1.zip
 **一键安装脚本**:
 ```bash
 # 使用curl
-curl -sSL https://raw.githubusercontent.com/diting-ai/diting-skills/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/DiTingAI/diting-ai-skills/main/install.sh | bash
 
 # 使用wget
-wget -q -O- https://raw.githubusercontent.com/diting-ai/diting-skills/main/install.sh | bash
+wget -q -O- https://raw.githubusercontent.com/DiTingAI/diting-ai-skills/main/install.sh | bash
 ```
 
 **高级安装脚本**:
 ```bash
-curl -sSL https://raw.githubusercontent.com/diting-ai/diting-skills/main/scripts/agent-install.sh | bash
+curl -sSL https://raw.githubusercontent.com/DiTingAI/diting-ai-skills/main/scripts/agent-install.sh | bash
 ```
 
 ### 📝 **核心安装提示词**
@@ -97,7 +97,7 @@ curl -sSL https://raw.githubusercontent.com/diting-ai/diting-skills/main/scripts
 
 一键安装命令：
 ```bash
-curl -sSL https://raw.githubusercontent.com/diting-ai/diting-skills/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/DiTingAI/diting-ai-skills/main/install.sh | bash
 ```
 
 基本使用：

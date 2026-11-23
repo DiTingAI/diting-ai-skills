@@ -25,6 +25,10 @@ if (!fs.existsSync(outputDir)) {
 }
 
 // 需要包含的文件和目录列表（基于package.json中的files字段）
+//
+// ⚠️ 不要放 LICENSE（2026-11-23 踩坑）：SkillHub 上传校验会直接拒绝**无扩展名**的文件，
+// 报「不允许的文件类型: LICENSE」，整个更新提交失败。许可证声明放在 README 里说明即可，
+// 仓库根目录仍然保留 LICENSE 文件（GitHub / npm 侧需要）。
 const filesToInclude = [
   'bin',
   'scripts',
@@ -34,7 +38,6 @@ const filesToInclude = [
   '_meta.json',
   'package.json',
   'package-lock.json',
-  'LICENSE',
   '.env.example'
 ];
 
@@ -85,27 +88,14 @@ for (const file of filesToInclude) {
   }
 }
 
-// 复制dist目录中的二进制文件（如果存在）
-const distDir = path.join(projectRoot, 'dist');
-if (fs.existsSync(distDir)) {
-  const binaryFiles = fs.readdirSync(distDir)
-    .filter(file => !file.endsWith('.zip') && !file.startsWith('.') && file !== 'diting-macos-arm64');
-  
-  if (binaryFiles.length > 0) {
-    const destDistDir = path.join(tempDir, 'dist');
-    if (!fs.existsSync(destDistDir)) {
-      fs.mkdirSync(destDistDir, { recursive: true });
-    }
-    
-    for (const binaryFile of binaryFiles) {
-      const source = path.join(distDir, binaryFile);
-      const dest = path.join(destDistDir, binaryFile);
-      fs.copyFileSync(source, dest);
-      fileCount++;
-      console.log(`  ✅ 已复制二进制文件: dist/${binaryFile}`);
-    }
-  }
-}
+// 打包不再附带 dist/ 预编译二进制（2026-11-23）
+//
+// 原因：
+//   1. dist/ 里的二进制是 1.0.0 时代用 pkg 打的（单平台 46~51MB），
+//      和包内脚本版本长期不同步，用户跑到的是旧代码；
+//   2. zip 因此从 44KB 膨胀到 33MB，SkillHub 上传与审核都更慢；
+//   3. 脚本零第三方依赖，Node 18+ 直接跑，没有必须用二进制的理由。
+// 需要二进制的场景请用 npm run build:binary:* 单独构建，不要再塞进分发包。
 
 console.log(`📊 总计复制 ${fileCount} 个文件`);
 

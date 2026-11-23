@@ -77,7 +77,24 @@ describe('CLI interface', () => {
     const output = execSync(`node ${cliPath} --help`, { encoding: 'utf8' });
     expect(output).toContain('DITING_API_KEY');
     expect(output).toContain('DITING_API_BASE_URL');
-    expect(output).toContain('https://diting.cc/home/apikey');
+    // 2026-11-23：取 Key 链接改为规范路径 /skills 并带渠道归因参数
+    // （/home/apikey 是前端旧 URL，会 redirect，query 不可靠）
+    expect(output).toContain('https://diting.cc/skills');
+    expect(output).toContain('from=skillhub');
+  });
+
+  test('should print version with --version', () => {
+    const output = execSync(`node ${cliPath} --version`, { encoding: 'utf8' }).trim();
+    const { version } = require('../package.json');
+    expect(output).toContain(version);
+    expect(output).toContain('channel=');
+  });
+
+  test('config command should not require an API key', () => {
+    const output = execSync(`env -u DITING_API_KEY node ${cliPath} config`, { encoding: 'utf8' });
+    const parsed = JSON.parse(output);
+    expect(parsed.api_key_configured).toBe(false);
+    expect(String(parsed.get_api_key)).toContain('from=skillhub');
   });
 });
 

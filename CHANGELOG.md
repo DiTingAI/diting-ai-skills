@@ -2,6 +2,54 @@
 
 所有项目的显著变更都将记录在此文件中。
 
+## [1.0.4] - 2026-11-23
+
+> 主题：**渠道止血 + 归因埋点**。
+> 线上 1.0.2 发布于 2026-07-07，到本次发布已 139 天未更新；
+> SkillHub 累计下载 791 次，但因为落地链接是裸链、CLI 不带终端标识，**一次都归因不了**。
+
+### 新增
+
+- **渠道归因模块** `scripts/channel.js`
+  - 所有对外链接统一带 `?from=skillhub&c=20261123-skillhub`（可用 `DITING_SKILL_CHANNEL` / `DITING_SKILL_CAMPAIGN` 覆盖）
+  - 落地链接从 `/home/apikey` 改为规范路径 `/skills`（前者是旧 URL，会 redirect 且 query 不可靠）
+- **CLI 埋点头**：每次请求带 `X-Visitor-Id` / `X-Analytics-Source` / `X-Page-Url` / `X-Aiditing-Client`
+  - 服务端在任务落库后据此补报 `upload_done`（page_url 含渠道参数），
+    于是「渠道落地 → 注册 → 转写」可用 `visitor_id` 串联，**无需后端改动**
+  - 匿名设备标识持久化在 `~/.diting-skills/visitor_id`，不含用户名 / 主机名 / 路径
+  - `DITING_SKILL_TELEMETRY=0` 可完全关闭
+- `diting config` 命令（此前 SKILL.md / README 写了但实际不存在）：输出 Key 脱敏状态、base URL、渠道、visitor_id、取 Key / 升级链接
+- `diting --version` 支持（此前 README 写了但实际报 Unknown command）
+- `transcribe` 结果新增 `portal_url`（带归因），作为「命令行 → 网页端」二次转化入口
+
+### 已修复
+
+- README 与安装命令全部指向不存在的仓库 `DiTingAI/diting-ai-skills`（404），
+  一键安装 `curl .../install.sh | bash` 实为死链；真实仓库为 **DiTingAI/diting-ai-skills**
+- `install.sh` 改为从 GitHub 源码包安装，不再依赖 `cdn.diting.cc` 上不存在的 `1.0.3.zip`（403）；
+  同时不再强依赖 137MB 预编译二进制（脚本零第三方依赖，Node 18+ 即可）
+- 文档中去掉「30 秒转写」「Convert videos to text in seconds」等耗时承诺（实际耗时取决于视频时长、网络与队列）
+- 文档中 `upload` / `folder` 命令与「上传本地音频/视频」能力描述已删除（这两项在当前版本不存在）
+- README 版本徽章、当前版本号、发布日期统一更新；删除 README 中重复的中文段落
+
+### 勘误（对 1.0.3 的判断修正）
+
+1.0.3 的变更说明写「删除服务端不存在的听悟（Tingwu）转写链路」，这个判断**是错的**：
+
+- `POST /api/v1/tingwu/tasks`、`/api/v1/tingwu/tasks/submit-and-wait` 等路由自 **2026-02-05** 起就存在
+  （`diting-api` router.go），线上探测返回 401 而非 404，且 `config_prod.yaml` 已配置
+  `tingwu_endpoint` / `tingwu_app_key`。
+- 因此 v1.0.3 **不是修正，而是一次能力回退**：删掉了 1.0.2 已有的音频 URL 转写入口。
+
+本次 1.0.4 **不做恢复**，原因是：
+- 听悟链路属于「音频 URL 转写」，与产品主链路（B 站视频转写）不同，且当时删它是因为
+  「MVP 只保留确定可用的通道」，这个取舍本身可以接受；
+- 更合适的本地文件 / 音频入口是开放 API 的 `POST /v1/transcriptions/upload`（200MB 上限，
+  线上已可用），将在 1.1.0 接入，而不是回退到旧脚本。
+
+结论：**文案按「当前不支持本地上传」如实描述，等功能接完再写。随时可查的接口清单以
+`https://api.diting.cc/docs` 与 `diting-api/router/router.go` 为准，不要凭记忆判断接口存不存在。**
+
 ## [1.0.3] - 2026-07-18
 
 ### 已移除

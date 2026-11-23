@@ -101,7 +101,7 @@ cp .env.example .env
 | **资产读取** | `/diting asset-read` | 读取原文、纪要、文件详情 |
 | **知识库搜索** | `/diting search` | 搜索知识库和文件列表 |
 
-> ⚠️ **已移除功能**：听悟（Tingwu）音频转写（原 `diting transcribe --tingwu` / `scripts/upload.js`）因服务端无对应接口，已在 v1.0.3 清理中整体移除。音频文件转写暂不支持，仅保留 B 站视频转写。
+> ⚠️ **已移除功能**：听悟（Tingwu）音频转写（原 `diting transcribe --tingwu` / `scripts/upload.js`）已在 v1.0.3 清理中移除（⚠️ 当时的判断依据有误，服务端接口一直存在，详见 CHANGELOG 1.0.4「勘误」）。音频文件转写暂不支持，仅保留 B 站视频转写。
 
 ## 📋 环境要求
 
@@ -144,7 +144,7 @@ cp .env.example .env
 
 - **谛听 AI 官网**: https://diting.cc
 - **API 文档**: https://api.diting.cc/docs
-- **开放平台**: https://diting.cc/home/apikey
+- **开放平台**: https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill
 
 ---
 
