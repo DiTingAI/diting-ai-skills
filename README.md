@@ -163,21 +163,38 @@ export PATH="$HOME/.diting-skills:$PATH"
 
 ---
 
-## 八、版本
+## 八、演示视频（录制于 v1.0.1，安装步骤请以本文为准）
+
+[![在 B 站观看完整演示](https://img.shields.io/badge/Bilibili-观看完整演示-FB7299?style=flat-square&logo=bilibili&logoColor=white)](https://www.bilibili.com/video/BV1T7Td69EyF)
+
+完整演示约 4 分钟：<https://www.bilibili.com/video/BV1T7Td69EyF>
+
+> ⚠️ 这条视频录制于 2026-07-07（v1.0.1），有 3 处已经变化，**照做前先看这里**：
+>
+> 1. **安装方式已换**：视频里讲的是「下载 zip / 用提示词安装」，现在只要一条 `install.sh`
+>    命令（见第三节）。旧提示词里的下载地址指向一个已经不存在的仓库，会 404。
+> 2. **取 Key 页面已换**：`diting.cc/home/apikey` → `diting.cc/skills`
+>    （用第五节那条带 `from=skillhub` 的链接）。
+> 3. **能力边界**：视频里演示的「英文一键翻译」「语义润色」是**网页端**功能，
+>    本 Skill 只负责「转写 → 读取原文/纪要 → 检索知识库」。
+>
+> 视频讲的「3 步工作流」（装 Skill → 贴链接 → 提问式学习）本身仍然成立。
+
+## 九、版本
 
 - **当前版本**：v1.0.4（2026-11-23）
 - **变更历史**：[CHANGELOG.md](CHANGELOG.md)
 - 本版重点：修复失效的安装链路（仓库地址 404）、删除失实的能力描述、
   全链路渠道归因埋点（`from=skillhub`）、新增 `diting config` 与 `diting --version`
 
-## 九、支持
+## 十、支持
 
 - 仓库：<https://github.com/DiTingAI/diting-ai-skills>
 - 问题反馈：<https://github.com/DiTingAI/diting-ai-skills/issues>
 - 文档站：<https://ditingai.github.io/diting-ai-skills/>
 - API 文档：<https://api.diting.cc/docs>
 
-## 十、License
+## 十一、License
 
 MIT No Attribution（MIT-0）。仓库根目录有 [LICENSE](LICENSE)；
 由于 SkillHub 不接受无扩展名文件，分发包不包含该文件，许可证全文如下：
