@@ -124,6 +124,57 @@ function homeUrl() {
 }
 
 /**
+ * 单个任务的网页端直达链接（2026-11-24 新增）
+ *
+ * 为什么要有：命令行只能给文本，大纲 / 思维导图 / 时间轴 / 问答 / 跨视频检索
+ * 这些「沉淀型」能力只在网页端。此前只给 /skills 通用落地页，
+ * 用户点进去还得自己再找一遍任务 —— 承接断在这一步。
+ *
+ * 为什么指向 /video-doc/{id} 而不是 /share/{id}：
+ *   skill 用户 100% 已经注册过（用 skill 的前提就是登录建 API Key）。
+ *   把他们送到 /share/{id}（分享页）会错位：那是给未注册访客看的页面，
+ *   CTA 全是「注册 / 免费体验」，对已有账号的人无效，也形不成「这是我的知识库」的认知。
+ *   /video-doc/{id} 是工作台详情页，左侧有导航、能回到任务列表，才具备「资产沉淀」感。
+ *
+ * 未登录怎么办：diting-portal 的路由守卫会把未登录的详情页访问
+ * 降级重定向到 /share/{id}（保留 from / c 参数），内容照样看得到。
+ * 所以同一个链接对两类人都成立：
+ *   已登录 → 工作台详情；未登录 / 换设备 → 分享页。
+ */
+function videoDocUrl(taskId) {
+  if (!taskId) return '';
+  return buildAttributedUrl(`/video-doc/${encodeURIComponent(String(taskId))}`, {
+    client: 'skill',
+    // src=return 是可测量性的前提，不要删（原因见 libraryUrl 上方注释）
+    src: 'return'
+  });
+}
+
+/**
+ * 个人任务列表页（2026-11-24 新增）
+ *
+ * 用于「我有哪些视频 / 帮我找找」这类没有单一 task_id 的场景：
+ * 没有这一条，Agent 只能把文件名念一遍，用户没有出口。
+ *
+ * 参数里为什么必须带 src=return（2026-11-24 数据校验后追加）：
+ *   网页端的 from=skillhub 是**首触持久化**的（attribution.js:118），
+ *   用户只要从 /skills 进来过一次，之后所有埋点的 page_url 都会被自动补上
+ *   `from=skillhub`。于是「用户点了本 Skill 给的回流链接」和「用户自己打开网站」
+ *   产生的 page_url 完全一致，回流效果无法归因。
+ *
+ *   src=return 是显式写进 URL 的额外参数，appendAttribution 遇到已带 from 的 URL
+ *   会原样返回（attribution.js:163），所以这个参数能完整落到 page_url 里，
+ *   且 parseAttribution 只解析 from/c，不会影响归因逻辑。
+ *
+ *   有了它，上线后一条 SQL 就能算出「Skill 回流点击率」：
+ *     WHERE page_url LIKE '%src=return%'
+ *   并与老路径（from=skillhub 但不含 src=return）做对比。
+ */
+function libraryUrl() {
+  return buildAttributedUrl('/home', { client: 'skill', src: 'return' });
+}
+
+/**
  * 埋点请求头。服务端只在「带 X-Visitor-Id」时补报 upload_done，
  * 因此这三个头是渠道可归因的前提，不能省。
  */
@@ -157,5 +208,7 @@ module.exports = {
   getVisitorId,
   getUserAgent,
   homeUrl,
-  pricingUrl
+  libraryUrl,
+  pricingUrl,
+  videoDocUrl
 };

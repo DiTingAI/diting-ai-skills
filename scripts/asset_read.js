@@ -4,7 +4,8 @@ const {
   formatJson,
   getConfig,
   parseArgs,
-  requestJSON
+  requestJSON,
+  videoDocUrl
 } = require('./shared');
 
 /**
@@ -252,23 +253,62 @@ async function readByType(options = {}) {
   const videoId = options['video-id'] || options['task-id'];
   const typeKey = typeof options.type === 'string' ? options.type.trim().toLowerCase() : '';
 
+  let result;
+
   if (videoId && typeKey) {
     const handler = TYPE_HANDLERS[typeKey];
     if (!handler) {
       throw new Error(`不支持的 --type: ${typeKey}（可选：${Object.keys(TYPE_HANDLERS).join(' / ')}）`);
     }
-    return handler(options);
+    result = await handler(options);
+    return attachWebUrl(result, videoId);
   }
 
   if (videoId) {
     for (const [key, handler] of Object.entries(TYPE_HANDLERS)) {
       if (options[key]) {
-        return handler(options);
+        result = await handler(options);
+        return attachWebUrl(result, videoId);
       }
     }
   }
 
-  return assetRead(options);
+  result = await assetRead(options);
+  return attachWebUrl(result, videoId);
+}
+
+/**
+ * 给读取结果补一个网页端详情直链（2026-11-24 新增）
+ *
+ * 目的：Agent 把「原文/纪要/大纲」交给用户之后，用户往往想知道
+ * 「这东西在哪儿能长期看到、还能不能导出去」——命令行答不了这个问题，
+ * 网页端能（思维导图、时间轴、跨视频检索、导出 Obsidian）。
+ *
+ * 用 ...result 浅拷贝而不是直接改对象：assetRead 返回的是接口 data，
+ * 保持调用方拿到的其它字段一个不少，同时不污染原始响应。
+ */
+function attachWebUrl(result, explicitTaskId) {
+  if (!result || typeof result !== 'object') return result;
+  if (Array.isArray(result)) return result;
+
+  // 取 id 的优先级（不要退回裸 result.id）：
+  //   1. 用户显式传的 --task-id / --video-id，最可信；
+  //   2. 接口返回里明确叫 taskId / task_id 的字段；
+  //   3. 形状确实是 UUID 的 result.id。
+  // 为什么第 3 步要校验形状：走 --asset-id 时响应来自 /v1/assets/{assetId}，
+  // 它的 id 可能是 asset_id 而非 task_id，直接拿来拼 /video-doc/ 会 404。
+  // 生产库 55,765 条任务全部是 UUID，所以这个校验不会误伤。
+  const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+  const explicit = typeof explicitTaskId === 'string' ? explicitTaskId.trim() : '';
+  const taskId = explicit
+    || result.taskId
+    || result.task_id
+    || (typeof result.id === 'string' && UUID_RE.test(result.id) ? result.id : '');
+
+  const url = videoDocUrl(taskId);
+  if (!url) return result;
+
+  return { ...result, web_url: url };
 }
 
 async function main() {

@@ -1,6 +1,6 @@
 # 谛听 AI Skills（Diting Skill）
 
-[![Version](https://img.shields.io/badge/version-1.0.6-green.svg)]()
+[![Version](https://img.shields.io/badge/version-1.0.8-green.svg)]()
 [![License: MIT-0](https://img.shields.io/badge/License-MIT--0-blue.svg)](https://opensource.org/licenses/MIT-0)
 [![Node](https://img.shields.io/badge/Node.js-18%2B-lightgrey.svg)]()
 [![GitHub Stars](https://img.shields.io/github/stars/DiTingAI/diting-ai-skills?style=social)](https://github.com/DiTingAI/diting-ai-skills)
@@ -32,9 +32,13 @@
 
 ## 二、快速开始（3 步）
 
+> **需要谛听账号**：API Key 是在账号里生成的，没有匿名通道。还没有账号时，
+> 下面第 1 步的链接用微信扫码即完成注册（免费，新账号送 30 分钟转写额度）。
+
 ### 1. 获取 API Key
 
-打开 <https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill>，登录后点「创建 API Key」。
+打开 <https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill>，
+微信扫码登录（没有账号就是注册），登录后点「创建 API Key」。
 
 ### 2. 配置环境变量
 
@@ -49,7 +53,7 @@ echo 'export DITING_API_KEY=你的Key' >> ~/.zshrc && source ~/.zshrc
 ```bash
 diting transcribe --url "https://www.bilibili.com/video/BV1f6HheYExS"
 diting config        # 自查：Key 脱敏状态、渠道、base URL
-diting --version     # 1.0.6 (channel=skillhub)
+diting --version     # 1.0.8 (channel=skillhub)
 ```
 
 ---
@@ -95,11 +99,11 @@ node scripts/transcribe.js --url "https://www.bilibili.com/video/BV1f6HheYExS" -
 node scripts/transcribe.js --url "https://www.bilibili.com/video/BV1f6HheYExS" --batch-all
 
 # 查状态 / 轮询到完成
-node scripts/transcribe.js --task-id tsk_20260703_xxxxxxxx --poll
+node scripts/transcribe.js --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --poll
 
 # 读原文 / 纪要 / 详情
-node scripts/asset_read.js --task-id tsk_20260703_xxxxxxxx
-node scripts/asset_read.js --task-id tsk_20260703_xxxxxxxx --type summary
+node scripts/asset_read.js --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c
+node scripts/asset_read.js --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --type summary
 
 # 知识库检索
 node scripts/search.js --query "吴恩达"
@@ -182,10 +186,11 @@ export PATH="$HOME/.diting-skills:$PATH"
 
 ## 九、版本
 
-- **当前版本**：v1.0.6（2026-11-24）
+- **当前版本**：v1.0.8（2026-11-24）
 - **变更历史**：[CHANGELOG.md](CHANGELOG.md)
-- 本版重点：修复搜索命令 `success` 误判失败与引用来源丢失、`asset-read` 支持 `--type` / `--task-id`、
-  请求真实超时、API 文档地址更新为 <https://diting.cc/api-doc.html>
+- 本版重点：转写与读取结果新增**免登录笔记页直链** `web_url` / `web_urls`，把用户接回网页端
+  （完整笔记、思维导图、时间轴、跨视频检索只在网页端）。上一版 1.0.6 修复了搜索误判、
+  `asset-read --type`、请求真实超时等问题。
 
 ## 十、支持
 

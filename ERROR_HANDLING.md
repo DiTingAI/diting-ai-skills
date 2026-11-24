@@ -208,7 +208,7 @@ try {
 
 ```bash
 # 长任务使用轮询
-diting transcribe --task-id tsk_xxx --poll
+diting transcribe --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --poll
 
 # 显示进度信息
 Processing... 45%
@@ -219,7 +219,7 @@ Estimated time remaining: 2 minutes
 
 ```bash
 # 检查任务状态
-diting transcribe --task-id tsk_xxx
+diting transcribe --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c
 
 # 列出所有任务
 diting transcribe --list
@@ -240,7 +240,7 @@ A: 当前支持最大 2GB 的文件上传。
 A: 系统会自动重试2次，如果仍然失败，请检查网络连接或稍后重试。
 
 ### Q4: 如何查看任务进度？
-A: 使用 `diting transcribe --task-id tsk_xxx --poll` 轮询任务状态。
+A: 使用 `diting transcribe --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --poll` 轮询任务状态。
 
 ### Q5: 支持哪些视频平台？
 A: 目前主要支持 Bilibili，其他平台正在开发中。

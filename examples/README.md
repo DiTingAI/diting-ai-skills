@@ -38,7 +38,7 @@ diting transcribe --url "https://www.bilibili.com/video/BV1f6HheYExS"
 
 # Transcribe and get summary
 diting transcribe --url "https://www.bilibili.com/video/BV1xxx" && \
-diting asset-read --task-id tsk_xxx --type summary
+diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --type summary
 ```
 
 ### Example 2: Transcribe Bilibili Videos
@@ -129,7 +129,7 @@ mkdir -p "$OUTPUT_DIR"
 
 # Transcribe meeting recording (提交 B 站会议录像链接)
 echo "Processing meeting recording: $MEETING_FILE"
-TASK_ID=$(diting transcribe --url "$MEETING_FILE" | grep -o "tsk_[a-zA-Z0-9_]*")
+TASK_ID=$(diting transcribe --url "$MEETING_FILE" | grep -o '[0-9a-f]\{8\}-[0-9a-f]\{4\}-[0-9a-f]\{4\}-[0-9a-f]\{4\}-[0-9a-f]\{12\}' | head -1)
 
 # Wait for transcription
 echo "Waiting for transcription to complete..."
@@ -196,7 +196,7 @@ async function searchKnowledge(query, limit = 10) {
 diting transcribe --url "https://www.bilibili.com/video/BV1xxx"
 
 # Extract key points
-diting asset-read --task-id tsk_xxx --type summary
+diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --type summary
 
 # Search for related materials
 diting search --query "educational topic"

@@ -31,6 +31,9 @@ node bin/diting.js --help
 
 1. **要 Key**：把 <https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill> 给用户，
    让用户登录后创建并粘贴回来。
+   谛听需要账号，没有匿名 Key：用户说「我没有账号」时，明确告诉他这个链接**微信扫码即注册**
+   （免费，新账号送 30 分钟转写额度），登录后页面上就是「新建 API Key」——
+   不要只说「去创建 Key」，没账号的人打开落地页看到的是 Key 管理界面，容易以为与自己无关就离开。
 2. **配环境变量**：`export DITING_API_KEY=<Key>`（不要写进日志，不要回显完整 Key）。
 3. **自查**：`diting config` 看到 `api_key_configured: true` 再开始转写。
 

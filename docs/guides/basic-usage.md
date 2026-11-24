@@ -31,7 +31,7 @@ diting config
 diting transcribe --url "https://www.bilibili.com/video/BV1xxx"
 
 # Check task status
-diting transcribe --task-id tsk_xxx --poll
+diting transcribe --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --poll
 ```
 
 ### Knowledge Base Commands
@@ -41,10 +41,10 @@ diting transcribe --task-id tsk_xxx --poll
 diting search --query "search keywords"
 
 # Read asset details
-diting asset-read --task-id tsk_xxx
+diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c
 
 # Update file content
-diting update --task-id tsk_xxx --content "new content"
+diting update --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --content "new content"
 ```
 
 ## 🎯 Getting Started
@@ -77,7 +77,7 @@ diting search --query "test" --limit 1
 diting transcribe --url "https://www.bilibili.com/video/BV1f6HheYExS"
 
 # Note the task ID from the output
-# Example: Task created: tsk_20260706_abc123def456
+# Example: Task created: 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c
 ```
 
 ## 📊 Understanding Task IDs
@@ -85,18 +85,22 @@ diting transcribe --url "https://www.bilibili.com/video/BV1f6HheYExS"
 Every operation in Diting AI Skills returns a Task ID. This is important for tracking and retrieving results.
 
 ### Task ID Format
+
+Task ID 是一个标准 UUID（36 字符，带连字符）：
+
 ```
-tsk_YYYYMMDD_randomstring
+8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c
 ```
-- `tsk_` - Task prefix
-- `YYYYMMDD` - Date when task was created
-- `randomstring` - Unique identifier
+
+- 直接取 `transcribe` 返回的 `taskIds` 数组里的值，原样使用
+- **没有 `tsk_` 之类的前缀**，不要自己加、也不要截断
+- 同一个 ID 就是网页端笔记页 `/video-doc/{task_id}` 里那一段
 
 ### Working with Task IDs
 
 ```bash
 # Store task ID in variable for easy reference
-TASK_ID="tsk_20260706_abc123def456"
+TASK_ID="8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c"
 
 # Use the variable in commands
 diting asset-read --task-id $TASK_ID
@@ -109,7 +113,7 @@ diting transcribe --task-id $TASK_ID --poll
 
 ```bash
 # 1. Submit transcription task
-TASK_ID=$(diting transcribe --url "B站链接" | grep -o "tsk_[^ ]*")
+TASK_ID=$(diting transcribe --url "B站链接" | grep -o '[0-9a-f]\{8\}-[0-9a-f]\{4\}-[0-9a-f]\{4\}-[0-9a-f]\{4\}-[0-9a-f]\{12\}' | head -1)
 
 # 2. Wait for completion
 diting transcribe --task-id $TASK_ID --poll
@@ -133,7 +137,7 @@ VIDEOS=(
 
 for VIDEO_URL in "${VIDEOS[@]}"; do
   echo "Processing: $VIDEO_URL"
-  TASK_ID=$(diting transcribe --url "$VIDEO_URL" | grep -o "tsk_[^ ]*")
+  TASK_ID=$(diting transcribe --url "$VIDEO_URL" | grep -o '[0-9a-f]\{8\}-[0-9a-f]\{4\}-[0-9a-f]\{4\}-[0-9a-f]\{4\}-[0-9a-f]\{12\}' | head -1)
   echo "Task ID: $TASK_ID"
   
   # Wait a moment before next request
@@ -150,8 +154,8 @@ diting search --query "machine learning" --limit 10
 # 2. Note interesting task IDs from results
 
 # 3. Get detailed information for specific tasks
-diting asset-read --task-id tsk_xxx --type summary
-diting asset-read --task-id tsk_yyy --type mindmap
+diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --type summary
+diting asset-read --task-id 2c4d6e8f-1a3b-4c5d-8e9f-0a1b2c3d4e5f --type mindmap
 ```
 
 ## 🎨 Output Formats
@@ -160,23 +164,23 @@ diting asset-read --task-id tsk_yyy --type mindmap
 
 ```bash
 # Default output (formatted text)
-diting asset-read --task-id tsk_xxx
+diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c
 
 # Raw text (no formatting)
-diting asset-read --task-id tsk_xxx --raw
+diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --raw
 
 # JSON output (for scripting)
-diting asset-read --task-id tsk_xxx --json
+diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --json
 ```
 
 ### File Output
 
 ```bash
 # Save output to file
-diting asset-read --task-id tsk_xxx --type original > transcription.txt
+diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --type original > transcription.txt
 
 # Append to existing file
-diting asset-read --task-id tsk_xxx --type summary >> summaries.txt
+diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --type summary >> summaries.txt
 ```
 
 ## ⚙️ Configuration Options
@@ -231,12 +235,12 @@ diting search --query "ai" --limit 20 --offset 0
 
 ```bash
 # Monitor multiple tasks
-for TASK_ID in tsk_xxx tsk_yyy tsk_zzz; do
+for TASK_ID in 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c 2c4d6e8f-1a3b-4c5d-8e9f-0a1b2c3d4e5f 6b5a4c3d-2e1f-4a9b-8c7d-6e5f4a3b2c1d; do
   diting transcribe --task-id $TASK_ID --poll
 done
 
 # Get task status without polling
-diting asset-read --task-id tsk_xxx --status-only
+diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --status-only
 ```
 
 ### Error Handling
@@ -277,7 +281,7 @@ mkdir -p "$OUTPUT_DIR"
 
 # Submit transcription
 echo "Submitting transcription for: $VIDEO_URL"
-TASK_ID=$(diting transcribe --url "$VIDEO_URL" | grep -o "tsk_[^ ]*")
+TASK_ID=$(diting transcribe --url "$VIDEO_URL" | grep -o '[0-9a-f]\{8\}-[0-9a-f]\{4\}-[0-9a-f]\{4\}-[0-9a-f]\{4\}-[0-9a-f]\{12\}' | head -1)
 
 if [ -z "$TASK_ID" ]; then
   echo "Error: Failed to get task ID"
@@ -368,7 +372,7 @@ diting transcribe --url "$URL" > "projects/raw/$(date +%Y%m%d_%H%M%S).log"
 
 ```bash
 # Check task status regularly
-watch -n 10 'diting transcribe --task-id tsk_xxx --poll'
+watch -n 10 'diting transcribe --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --poll'
 
 # Log all operations
 diting transcribe --url "$URL" --verbose 2>&1 | tee transcription.log

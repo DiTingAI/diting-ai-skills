@@ -168,7 +168,7 @@ GET /v1/assets/{id}
 ### 获取资产详情
 
 ```bash
-node scripts/asset_read.js --task-id tsk_20260703_xxxxxxxx
+node scripts/asset_read.js --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c
 # 说明：--task-id 与 --video-id 等价；按类型读取支持两种写法
 #   --type summary  等价于  --summary
 #   --type transcript / outline / mindmap / qa / polish / chapters 同理
@@ -184,50 +184,50 @@ node scripts/asset_read.js --asset-id vid_20260703_abc123
 
 ```bash
 # 原始转录文本
-node scripts/asset_read.js --video-id tsk_20260703_xxxxxxxx --transcript --format original
+node scripts/asset_read.js --video-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --transcript --format original
 
 # 润色后转录文本
-node scripts/asset_read.js --video-id tsk_20260703_xxxxxxxx --transcript --format polished
+node scripts/asset_read.js --video-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --transcript --format polished
 
 # 带时间戳的转录文本
-node scripts/asset_read.js --video-id tsk_20260703_xxxxxxxx --transcript --format timestamp
+node scripts/asset_read.js --video-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --transcript --format timestamp
 
 # 默认返回所有转录文本
-node scripts/asset_read.js --video-id tsk_20260703_xxxxxxxx --transcript
+node scripts/asset_read.js --video-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --transcript
 ```
 
 ### 获取摘要
 
 ```bash
-node scripts/asset_read.js --video-id tsk_20260703_xxxxxxxx --summary
+node scripts/asset_read.js --video-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --summary
 ```
 
 ### 获取 AI 大纲
 
 ```bash
-node scripts/asset_read.js --video-id tsk_20260703_xxxxxxxx --outline
+node scripts/asset_read.js --video-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --outline
 ```
 
 ### 获取思维导图
 
 ```bash
-node scripts/asset_read.js --video-id tsk_20260703_xxxxxxxx --mindmap
+node scripts/asset_read.js --video-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --mindmap
 ```
 
 ### 获取问答对
 
 ```bash
-node scripts/asset_read.js --video-id tsk_20260703_xxxxxxxx --qa
+node scripts/asset_read.js --video-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --qa
 ```
 
 ### 获取润色文本
 
 ```bash
-node scripts/asset_read.js --video-id tsk_20260703_xxxxxxxx --polish
+node scripts/asset_read.js --video-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --polish
 ```
 
 ### 获取章节
 
 ```bash
-node scripts/asset_read.js --video-id tsk_20260703_xxxxxxxx --chapters
+node scripts/asset_read.js --video-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --chapters
 ```

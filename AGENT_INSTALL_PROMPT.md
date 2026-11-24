@@ -12,6 +12,7 @@ curl -sSL https://raw.githubusercontent.com/DiTingAI/diting-ai-skills/main/insta
 
 装完后：
 1) 我需要先拿到 API Key，请给我这个链接：https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill
+   （打开后微信扫码登录；没有账号的话，扫码即注册，免费，新账号送 30 分钟额度）
 2) 我把 Key 发给你之后，执行 export DITING_API_KEY=<我给你的Key>
 3) 用 diting config 自查，再用 diting transcribe --url "<B站链接>" 转写
 4) 全程不要把完整 API Key 回显出来

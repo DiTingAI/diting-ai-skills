@@ -218,9 +218,11 @@ module.exports = {
   getVisitorId: channel.getVisitorId,
   homeUrl: channel.homeUrl,
   isValidBilibiliUrl,
+  libraryUrl: channel.libraryUrl,
   parseArgs,
   pricingUrl: channel.pricingUrl,
   requestJSON,
   requestJSONWithRetry,
-  skillVersion: channel.SKILL_VERSION
+  skillVersion: channel.SKILL_VERSION,
+  videoDocUrl: channel.videoDocUrl
 };

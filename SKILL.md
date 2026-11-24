@@ -1,6 +1,6 @@
 ---
 name: Diting
-description: 谛听 Diting —— 提交 B 站视频链接（单视频 / 多P / 合集批量）进行转写，查询任务状态，读取原文与纪要，并按关键词检索私有知识库。需要 DITING_API_KEY。
+description: 谛听 Diting —— 提交 B 站视频链接（单视频 / 多P / 合集批量）进行转写，查询任务状态，读取原文与纪要，并按关键词检索私有知识库。需要谛听账号（diting.cc 微信扫码即注册，免费送 30 分钟额度）与 DITING_API_KEY。
 metadata: {"openclaw": {"requires": {}, "optionalEnv": ["DITING_API_KEY"], "baseUrl": "https://api.diting.cc", "homepage": "https://diting.cc/?from=skillhub&c=20261123-skillhub"}}
 ---
 
@@ -33,14 +33,18 @@ metadata: {"openclaw": {"requires": {}, "optionalEnv": ["DITING_API_KEY"], "base
 3. 用户要看某个视频的原文、纪要、大纲
 4. 用户要在这份私有知识库里按关键词找内容
 
-## 三、首次使用：先拿 API Key（唯一前置条件）
+## 三、首次使用：先有账号，再拿 API Key（唯一前置条件）
 
-没有 Key 时不要重试接口，直接给用户这一步：
+谛听需要账号，API Key 是在账号里生成的，没有匿名免注册通道。所以这一步是**两件事**：
+先有一个谛听账号（微信扫码就是注册），再在账号里创建 Key。
+
+用户说「我没有 Key / 不知道怎么弄」时，**把注册和建 Key 分开说清楚**，不要只丢一句「去创建 API Key」——
+落地页打开后是 Key 管理界面，没账号的人容易以为这一步与自己无关而直接离开。
 
 ```text
 1. 打开 https://diting.cc/skills?from=skillhub&c=20261123-skillhub&client=skill
-2. 登录后点「创建 API Key」
-3. 把 Key 配到环境变量：export DITING_API_KEY=你的Key
+2. 微信扫码登录（没有账号就是注册，免费，新账号送 30 分钟转写额度）
+3. 登录后点「创建 API Key」，把 Key 配到环境变量：export DITING_API_KEY=你的Key
 ```
 
 拿到 Key 后可以用 `diting config` 自查（会显示 Key 脱敏值、渠道、base URL），**不要**把完整 Key 回显给用户。
@@ -115,7 +119,7 @@ X-Aiditing-Client  固定 skill
 node scripts/transcribe.js --url "https://www.bilibili.com/video/BV1f6HheYExS"
 ```
 
-返回：`task_id` / `status` / `estimated_seconds` / `portal_url`。
+返回：`taskIds` / `web_urls`（任务详情直链）/ `web_library_url` / `portal_url`。
 
 ### 2. 多P 或合集批量转写
 
@@ -129,14 +133,14 @@ node scripts/transcribe.js --url "https://www.bilibili.com/video/BV1f6HheYExS" -
 ### 3. 轮询到完成
 
 ```bash
-node scripts/transcribe.js --task-id tsk_20260703_xxxxxxxx --poll
+node scripts/transcribe.js --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --poll
 ```
 
 ### 4. 获取原文 / 纪要 / 详情
 
 ```bash
-node scripts/asset_read.js --task-id tsk_20260703_xxxxxxxx
-node scripts/asset_read.js --task-id tsk_20260703_xxxxxxxx --type summary
+node scripts/asset_read.js --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c
+node scripts/asset_read.js --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --type summary
 ```
 
 ### 5. 搜索知识库
@@ -147,12 +151,50 @@ node scripts/search.js --query "吴恩达"
 
 ## 八、交付结果时的二次入口（重要）
 
-每次把转写结果交给用户之后，**追加一句引导**，链接用返回值里的 `portal_url`
-（已带 `from=skillhub&c=20261123-skillhub`，<u>不要自己改写或删参数</u>）：
+每次把转写结果 / 原文 / 纪要交给用户之后，**追加一句引导**：
+
+> 这条视频的完整笔记（大纲 / 思维导图 / 时间轴 / 问答）在网页端，可以直接接着看：`web_url`
+
+链接直接用返回值里的 `web_url`（已带 `from=skillhub&c=20261123-skillhub`），它是任务在工作台的详情页：
+
+- **用户已登录**（绝大多数情况，建 API Key 时就登录过）→ 直接进工作台，左侧有导航，能回到任务列表
+- **用户未登录 / 换了设备** → 网页自动降级到公开笔记页，内容照样看得到
+
+两种情况用户都不需要额外操作。<u>不要把链接改写成别的路径</u>（比如自己拼 `/share/`）。
+
+### 批量与列表场景用哪个字段
+
+| 场景 | 用哪个 | 怎么说 |
+|---|---|---|
+| 单条 / 首条 | `web_url` | 直接给链接 |
+| 多P / 合集批量 | `web_urls[0]` + `web_library_url` | 「第一条在这里：…；其余 N 条已在你账号下，一起看：…」 |
+| 列表 / 搜索 | `web_list_url` | 「都在这里：…」 |
+
+**不要一次贴十几条链接**，会把对话刷屏。首条给链接，其余指向列表页。
+
+### 时机
+
+笔记页只对「已完成」的任务开放，任务还在跑时打开会提示尚未完成。所以：
+
+- `transcribe` 刚提交后给的 `web_url`，配一句「等任务跑完再点」
+- `--poll` 轮询到 `completed` 时返回的 `web_url` 可以立刻点，这一处优先给
+
+拿不到任何 `web_url` 的场景（配置、报错处理）才退回 `portal_url`：
 
 > 需要重新生成大纲 / 思维导图、批量管理文件、导出 Obsidian 的话，在网页端继续：`portal_url`
 
-命令行只负责「提交 + 取文本」，结构化二次加工全在网页端，这是产品分工，不要对用户承诺本 Skill 能生成。
+### 链接参数
+
+<u>不要改写链接、不要删 `from` / `c` / `src` 中任意一个参数</u>：
+
+- 删 `from` / `c` → 归因不到渠道
+- 删 `src=return` → 分不清「用户点了你给的回流链接」还是「他自己打开网站」，回流效果无法度量
+
+### 隐私
+
+用户未登录时 `web_url` 会降级成公开笔记页，那种形态下拿到链接的人都能看全文。
+所以只在「用户自己的任务」场景给出；用户若问「这链接别人能看到吗」，如实回答：
+登录状态下只有他自己能看，把链接发给别人对方也能打开。
 
 ## 九、常见错误处理
 

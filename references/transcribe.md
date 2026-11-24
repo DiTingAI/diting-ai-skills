@@ -189,7 +189,7 @@ node scripts/transcribe.js --url "https://www.bilibili.com/video/BV1f6HheYExS"
 ### 轮询状态
 
 ```bash
-node scripts/transcribe.js --task-id tsk_20260703_xxxxxxxx --poll
+node scripts/transcribe.js --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --poll
 ```
 
 ### 重试任务
@@ -207,7 +207,7 @@ node scripts/transcribe.js --video-id <video_id> --delete
 ### 生成摘要
 
 ```bash
-node scripts/transcribe.js --task-id tsk_20260703_xxxxxxxx --summary
+node scripts/transcribe.js --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --summary
 ```
 
 ### 视频列表

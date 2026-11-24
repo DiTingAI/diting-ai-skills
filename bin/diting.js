@@ -146,23 +146,23 @@ Examples:
   diting transcribe --url "https://www.bilibili.com/video/BV1f6HheYExS"
 
   # 轮询状态
-  diting transcribe --task-id tsk_xxx --poll
+  diting transcribe --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --poll
 
   # 生成摘要
-  diting transcribe --task-id tsk_xxx --summary
+  diting transcribe --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --summary
 
   # 读取资产详情
-  diting asset-read --task-id tsk_xxx
+  diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c
 
   # 读取转录文本
-  diting asset-read --video-id tsk_xxx --transcript
+  diting asset-read --video-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --transcript
 
   # 知识库搜索
   diting search --query "吴恩达"
 
   # 重试/删除记录
-  diting update --id tsk_xxx --retry
-  diting update --id tsk_xxx --delete
+  diting update --id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --retry
+  diting update --id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --delete
 
 Environment:
   DITING_API_KEY          Required. 获取地址: ${apiKeyUrl()}

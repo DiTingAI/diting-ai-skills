@@ -53,13 +53,13 @@ diting --help
 diting transcribe --url "https://www.bilibili.com/video/BV1f6HheYExS"
 
 # Output will show task ID
-# Example: Task created: tsk_20260706_abc123def456
+# Example: Task created: 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c
 ```
 
 ### Check Task Status
 ```bash
 # Use the task ID from previous command
-diting transcribe --task-id tsk_20260706_abc123def456 --poll
+diting transcribe --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --poll
 
 # This will show progress and notify when complete
 ```
@@ -67,13 +67,13 @@ diting transcribe --task-id tsk_20260706_abc123def456 --poll
 ### Get Transcription Results
 ```bash
 # Get original transcription text
-diting asset-read --task-id tsk_20260706_abc123def456 --type original
+diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --type original
 
 # Get AI summary
-diting asset-read --task-id tsk_20260706_abc123def456 --type summary
+diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --type summary
 
 # Get mind map
-diting asset-read --task-id tsk_20260706_abc123def456 --type mindmap
+diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --type mindmap
 ```
 
 ## 🔍 Search Knowledge Base
@@ -129,7 +129,7 @@ diting asset-read --task-id "任务ID"
 diting transcribe --url "https://www.bilibili.com/video/BV1xxx"
 
 # 2. Get AI summary
-diting asset-read --task-id tsk_xxx --type summary
+diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --type summary
 
 # 3. Search related content
 diting search --query "相关主题"
@@ -138,10 +138,10 @@ diting search --query "相关主题"
 ### Workflow 2: Meeting Recording Processing
 ```bash
 # 1. Get transcription
-diting asset-read --task-id tsk_xxx --type original
+diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --type original
 
 # 2. Get action items (AI summary)
-diting asset-read --task-id tsk_xxx --type summary
+diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --type summary
 ```
 
 ### Workflow 3: Content Creation
@@ -153,7 +153,7 @@ diting transcribe --url "source_video_url"
 diting search --query "topic keywords"
 
 # 3. Generate outline from mind map
-diting asset-read --task-id tsk_xxx --type mindmap
+diting asset-read --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --type mindmap
 ```
 
 ## 🆘 Need Help?

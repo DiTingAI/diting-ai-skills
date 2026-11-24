@@ -4,8 +4,10 @@ const {
   buildAttributedUrl,
   formatJson,
   getConfig,
+  libraryUrl,
   parseArgs,
-  requestJSON
+  requestJSON,
+  videoDocUrl
 } = require('./shared');
 
 /**
@@ -250,7 +252,14 @@ async function transcribe(options = {}) {
       response: task,
       // 二次转化入口：命令行只做「提交 + 取文本」，大纲/思维导图/问答/文件夹管理
       // 都在网页端，把 Agent 的用户导回带渠道归因的落地页（from/c 见 scripts/channel.js）
-      portal_url: buildAttributedUrl('/skills', { client: 'skill' })
+      portal_url: buildAttributedUrl('/skills', { client: 'skill' }),
+      // 2026-11-24：任务详情直链。portal_url 是「找得到入口」，web_urls 是「直接落到那条任务」。
+      // 承接链路：Claude 里转完 → 点链接 → 网页端 DetailDoc 看到完整笔记/思维导图/时间轴
+      //          → 第一次意识到「我的视频在这里沉淀成资产」。
+      web_urls: taskIds.map((id) => videoDocUrl(id)).filter(Boolean),
+      // 批量场景（多P / 合集）可能一次返回十几条，逐条贴链接会把对话刷屏。
+      // 给一个列表页出口：首条用 web_urls[0]，其余让用户去这里一起看。
+      web_library_url: libraryUrl()
     };
   }
 }
@@ -279,7 +288,9 @@ async function pollTask(options = {}) {
         success: true,
         taskId,
         status: 'completed',
-        detail
+        detail,
+        // 完成时给直达链接：用户此刻最想看的就是「这条的完整笔记长什么样」
+        web_url: videoDocUrl(taskId)
       };
     }
 
@@ -330,7 +341,12 @@ async function main() {
       sort_field: args.sort_field,
       sort_order: args.sort_order
     });
-    console.log(formatJson(result));
+    // 列表场景没有单一 task_id，补一个列表页出口，避免用户看完一屏文件名无处可去。
+    // 用展开而不是改结构：后端返回是对象（含 list/total），万一是数组也兜住。
+    const withEntry = Array.isArray(result)
+      ? { items: result, web_list_url: libraryUrl() }
+      : { ...result, web_list_url: libraryUrl() };
+    console.log(formatJson(withEntry));
     return;
   }
 

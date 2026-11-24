@@ -2,6 +2,113 @@
 
 所有项目的显著变更都将记录在此文件中。
 
+## [1.0.8] - 2026-11-24
+
+> 主题：**把「需要账号」说在前面**。命令与返回结构一行没改，只修一件事：
+> 用户装完 Skill 之后，不知道自己还缺一个账号。
+
+### 修正
+
+- **`SKILL.md` 的 `description` 标明前置条件**
+  加上「需要谛听账号（diting.cc 微信扫码即注册，免费送 30 分钟额度）」。
+  这一行是 SkillHub 列表页上用户唯一会读到的文字，此前只写了 `DITING_API_KEY`，
+  读起来像一个装完就能直接跑的工具。
+
+- **`SKILL.md` 第三节改为「先有账号，再拿 API Key」**
+  原文只有一句「登录后点创建 API Key」，隐含了「你已经有账号」这个前提。
+  现在把注册与建 Key 拆成两个明确步骤，并补了一条给 Agent 的行为约束：
+  用户说没有 Key 时，要把注册讲清楚，不能只回一句「去创建 API Key」。
+
+- **`README.md` / `AGENT_INSTALL_GUIDE.md` / `AGENT_INSTALL_PROMPT.md` 同步同一口径**
+  三个安装入口都补上账号说明，避免文档之间说法不一致。
+
+### 依据
+
+1.0.7 上线后，渠道漏斗显示断点在「建 Key」而不是安装：
+落地到 `/skills` 的访客走到了页面，但页面本身是 Key 管理界面，
+没账号的人看到它，无法判断自己该做什么。这一版只改文案，
+对已安装用户、已有 Key 的用户没有任何影响。
+
+### 兼容性
+
+- 命令行参数、返回字段、接口地址：**完全不变**。
+- 已配置 `DITING_API_KEY` 的用户无需任何操作。
+
+## [1.0.7] - 2026-11-24
+
+> 主题：**把用户接回网页端**。前六版解决的是「能不能用」，这一版解决「用完往哪走」。
+
+### 新增
+
+- **`transcribe` 返回 `web_urls` + `web_library_url`**
+  此前只有 `portal_url`（通用落地页 `/skills`），用户点进去还要自己再找一遍任务，
+  承接就断在这一步。现在每条任务给一条 `/video-doc/{task_id}`（与 `taskIds` 一一对应），
+  另给一个任务列表页 `/home`，供批量场景收口。
+- **`transcribe --poll` 完成后返回 `web_url`**
+  任务完成的那一刻是用户最想看「完整笔记长什么样」的时刻，链接直接给到位。
+- **`transcribe --list` 返回 `web_list_url`**
+  列表 / 搜索场景没有单一 task_id，此前 Agent 只能把文件名念一遍，用户没有出口。
+- **`asset-read` 全类型返回 `web_url`**
+  `--type transcript / summary / outline / mindmap / qa / polish / chapters`
+  以及不带 `--type` 的整份详情，都带上了同一条直链（`attachWebUrl` 统一注入）。
+- `scripts/channel.js` 新增 `videoDocUrl(taskId)` 与 `libraryUrl()`，复用 `from` / `c` 归因参数。
+- **回流链接带 `src=return` 标记（可测量性前提，数据校验后追加）**
+
+  网页端的 `from=skillhub` 是**首触持久化**的（`attribution.js:118`）：用户只要从 `/skills`
+  进来过一次，之后所有埋点的 `page_url` 都会被自动补上 `from=skillhub`。
+  于是「用户点了本 Skill 给的回流链接」和「用户自己打开网站」在数据上完全一致，
+  **回流效果无法归因** —— 加了钩子却测不出钩子的效果，等于没做。
+
+  `appendAttribution` 遇到已带 `from` 的 URL 会原样返回（`attribution.js:163`），
+  所以显式写进 URL 的 `src=return` 会完整落进 `page_url`；`parseAttribution`
+  只解析 `from`/`c`，不受影响。
+
+  上线后一条 SQL 即可算出回流：
+  ```sql
+  SELECT COUNT(DISTINCT visitor_id) AS return_uv
+  FROM analytics_events WHERE page_url LIKE '%src=return%';
+  ```
+
+### 为什么落地页是 `/video-doc/` 而不是 `/share/`
+
+skill 用户 100% 已经注册过（用 skill 的前提就是登录建 API Key）。
+`/share/{id}` 是给**未注册访客**看的分享页，CTA 全是「注册 / 免费体验」，
+对已有账号的人无效，也形不成「这是我的知识库」的认知。
+`/video-doc/{id}` 是工作台详情页，左侧有导航、能回到任务列表，才具备资产沉淀感。
+
+登录墙问题由前端解决：**配套改动 `diting-portal` 的路由守卫**，
+`/video-doc/:id`、`/video-classic/:id` 未登录时不再踢回首页，
+改为降级重定向到 `/share/{id}`（保留 `from` / `c` 参数）。
+于是同一个链接对两类人都成立：
+
+- 已登录 → 工作台详情页（大多数情况）
+- 未登录 / 换设备 / 链接被转发 → 公开笔记页，内容照常可见
+
+### 修复
+
+- **文档里的 `task_id` 格式是错的**
+  全包 62 处示例写作 `tsk_20260703_xxxxxxxx` 这类 `tsk_` 前缀格式，
+  但生产库 55,765 条任务 **100% 是 UUID**，`tsk_` 前缀 0 条。
+  更严重的是 `basic-usage.md` 里 `grep -o "tsk_[^ ]*"` 的提取脚本，
+  对真实输出**永远匹配不到**，整套自动化示例是失效的。
+  现已全部改为 UUID 形态，提取命令改用 UUID 正则。
+- **`attachWebUrl` 的 id 取值加形状校验**
+  走 `--asset-id` 时响应来自 `/v1/assets/{assetId}`，其 `id` 可能是 asset_id 而非 task_id，
+  直接拼 `/video-doc/` 会 404。现在优先用显式 `--task-id`，其次 `taskId` 字段，
+  最后才用「形状确实是 UUID」的 `id`。
+
+### 说明
+
+- 不改后端接口，链接由 CLI 侧用 `task_id` 自行拼接；`task_id` 即详情接口返回的 `id`。
+- 归因口径不变：`from=skillhub&c=20261123-skillhub&client=skill`，
+  网页端落地事件会带着这组参数落到 `analytics_events.page_url`，可直接统计「链接回流率」。
+- **时机**：详情页与分享页都只对 `completed` 任务开放，未完成时打开会提示尚未完成。
+  `transcribe` 提交后返回的 `web_urls` 需等任务跑完才可点，
+  `--poll` 完成后返回的 `web_url` 可立即使用；`SKILL.md` 已注明这一点。
+- **隐私**：用户未登录时链接会降级成公开笔记页，那种形态下持有链接者即可查看完整内容
+  （后端 `/share/{task_id}` 的凭证模型是「标识不可枚举即凭证」，只按 task_id 查、不校验归属）。
+  `SKILL.md` 第八节要求 Agent 只在「用户自己的任务」场景给出该链接，并在用户询问时如实说明。
+
 ## [1.0.6] - 2026-11-24
 
 > 主题：**回归测试修复**。三个功能性问题，都是 1.0.2 起就存在的既存缺陷，
