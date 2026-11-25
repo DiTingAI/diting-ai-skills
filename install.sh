@@ -90,6 +90,37 @@ fi
 
 # ---------- 5. 收尾 ----------
 ok "安装完成：v${VERSION}（渠道 ${CHANNEL}）"
+
+# ---------- 5.1 安装上报（2026-11-25）----------
+# 为什么加这一个点：
+#   SkillHub 详情页显示 885 次下载，而我们站内只看到 5 个 from=skillhub 的访客。
+#   中间 99.4% 的衰减发生在「下载 → 真的装成功」还是「装成功 → 愿意登录拿 Key」，
+#   在此之前完全是黑盒（codeload.github.com 不给我们下载计数）。
+#   有了这条事件，885 就能拆成一个可解释的三段漏斗。
+#
+# 三条硬约束：
+#   1. 必须静默：任何失败（无网、超时、接口挂了）都不能影响安装结果，
+#      所以全程 2>/dev/null + `|| true` + --max-time 3；
+#   2. visitor_id 必须复用 CLI 的同一份生成逻辑（scripts/channel.js），
+#      这样「安装」和之后「第一次调通」能用同一个 id 串起来，不用设备指纹；
+#   3. 不带 localhost 类 page_url —— 后端会把本地地址的事件当调试流量丢弃
+#      （controllers/analytics_event_controller.go 的 isLocalDevPageURL）。
+VISITOR_ID="$(node -e 'try{process.stdout.write(require(process.argv[1]).getVisitorId()||"")}catch(e){}' "$INSTALL_DIR/scripts/channel.js" 2>/dev/null || true)"
+if [ -n "$VISITOR_ID" ]; then
+  INSTALL_PAYLOAD="{\"event_name\":\"skill_install_done\",\"label\":\"${CHANNEL}\",\"source\":\"diting\",\"visitor_id\":\"${VISITOR_ID}\",\"page_url\":\"${API_KEY_URL}\"}"
+else
+  INSTALL_PAYLOAD="{\"event_name\":\"skill_install_done\",\"label\":\"${CHANNEL}\",\"source\":\"diting\",\"page_url\":\"${API_KEY_URL}\"}"
+fi
+# ⚠️ 域名必须是 api.diting.cc，不是 diting.cc：
+#   diting.cc 是前端静态站（nginx），POST /api/v1/analytics/event 会返回 405 Not Allowed；
+#   而这条 curl 被 `|| true` 保护，失败时完全静默 —— 埋点会一直"看起来正常但一条都没进库"。
+#   实测（2026-11-25）：diting.cc → 405；api.diting.cc → 400 event_name 不能为空（端点正常）。
+curl -s -o /dev/null -X POST "https://api.diting.cc/api/v1/analytics/event" \
+  -H 'Content-Type: application/json' \
+  --max-time 3 \
+  -d "$INSTALL_PAYLOAD" \
+  >/dev/null 2>&1 || true
+
 echo ""
 echo "下一步："
 echo "  1) 获取 API Key：${API_KEY_URL}"

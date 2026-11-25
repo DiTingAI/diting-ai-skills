@@ -106,14 +106,17 @@ Commands:
   config         Show API Key / base URL / channel status
 
 Transcribe Options:
-  --url          Bilibili video URL
+  --url          Video URL: Bilibili / Douyin / Xiaohongshu (share text is fine)
+  --file         Local audio/video file path (max 200MB)
+  --title        Optional title override (Douyin / Xiaohongshu)
+  --language     Optional source language, ISO 639-1 (e.g. en)
   --task-id      Task ID for polling/status
   --poll         Poll task status until completed
   --summary      Generate AI summary
   --retry        Retry failed task
   --list         List all videos
   --video-id     Video ID for operations
-  --delete       Delete video
+  --delete       Delete video (web login only; API Key cannot call DELETE)
 
 Asset-Read Options:
   --task-id      Task ID（与 --video-id 等价，二者任一即可）
@@ -145,6 +148,13 @@ Examples:
   # B 站视频转写
   diting transcribe --url "https://www.bilibili.com/video/BV1f6HheYExS"
 
+  # 抖音 / 小红书（可直接贴 App 复制出来的整段分享文案）
+  diting transcribe --url "https://v.douyin.com/xxxxxxx/"
+  diting transcribe --url "https://www.xiaohongshu.com/explore/xxxxxxx"
+
+  # 本地音视频（单文件 ≤ 200MB）
+  diting transcribe --file "/path/to/meeting.mp4"
+
   # 轮询状态
   diting transcribe --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --poll
 
@@ -172,7 +182,10 @@ Environment:
   DITING_SKILL_TELEMETRY  Optional. 设为 0 关闭匿名埋点上报
 
 Note:
-  - 当前版本只支持 B 站链接转写（单视频 / 多P / 合集批量），不支持本地上传。
+  - 支持四类转写输入：B 站（单视频 / 多P / 合集批量）、抖音、小红书、本地音视频文件。
+  - 抖音 / 小红书 / 本地上传走开放 API（/v1/transcriptions/*），单文件上限 200MB；
+    更大的文件请用网页端（上限 5GB）。
+  - 链接来源不受支持时不会创建任务，也不扣额度。
   - 智能大纲、思维导图、问答、润色等 AI 功能的数据可通过
     diting asset-read --video-id <id> --<type> 读取，或在网页端生成。
   - 完整能力清单见 SKILL.md；变更历史见 CHANGELOG.md。

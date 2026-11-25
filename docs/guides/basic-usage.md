@@ -384,10 +384,12 @@ diting transcribe --url "$URL" --verbose 2>&1 | tee transcription.log
 # Split large videos before processing
 ffmpeg -i large_video.mp4 -c copy -map 0 -segment_time 1800 -f segment output_%03d.mp4
 
-# 注意：本地分段文件暂不支持上传，请改为提交 B 站视频链接：
-# for segment in output_*.mp4; do
-#   diting transcribe --url "https://www.bilibili.com/video/BV1xxx"
-# done
+# 本地文件可直接上传（单文件 ≤ 200MB，v1.0.10 起支持）：
+for segment in output_*.mp4; do
+  diting transcribe --file "$segment"
+done
+
+# 单个分段仍超过 200MB 时，用网页端上传（上限 5GB）：https://diting.cc
 ```
 
 ## 🆘 Troubleshooting

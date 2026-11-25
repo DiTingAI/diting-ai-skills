@@ -77,8 +77,7 @@ for (const file of agentFilesToInclude) {
 }
 
 // 设置安装脚本权限
-const installScript = path.join(tempDir, 'install.sh');
-const agentInstallScript = path.join(tempDir, 'scripts', 'agent-install.sh');
+const installScript = path.join(tempDir, 'install.sh');const agentInstallScript = path.join(tempDir, 'scripts', 'agent-install.sh');
 if (fs.existsSync(installScript)) {
   fs.chmodSync(installScript, 0o755);
 }
@@ -87,6 +86,18 @@ if (fs.existsSync(agentInstallScript)) {
 }
 
 console.log(`📊 总计复制 ${fileCount} 个文件`);
+
+// dist/ 既是二进制产物目录、又是 ZIP 的输出目录：不排除历史 ZIP 的话，
+// 每次构建都会把上一次的包一起打进去，体积逐次翻倍（实测 180M → 361M）。
+const packedDist = path.join(tempDir, 'dist');
+if (fs.existsSync(packedDist)) {
+  for (const name of fs.readdirSync(packedDist)) {
+    if (name.toLowerCase().endsWith('.zip')) {
+      fs.rmSync(path.join(packedDist, name), { force: true });
+      console.log(`  🧹 排除历史发布包: dist/${name}`);
+    }
+  }
+}
 
 // 创建ZIP文件
 console.log(`\n🔧 创建Agent专用ZIP包: ${zipFileName}`);
@@ -102,15 +113,20 @@ try {
   console.log(`\n🎉 Agent专用包创建成功!`);
   console.log(`📁 文件位置: ${zipFilePath}`);
   console.log(`📏 文件大小: ${fileSizeMB} MB`);
-  console.log(`🔗 下载地址: https://cdn.diting.cc/assets/${zipFileName}`);
-  
+
   console.log(`\n📋 包内容概览:`);
   const listCommand = `unzip -l "${zipFilePath}" | grep -E "(\.sh$|\.md$|diting$|\.json$)" | head -20`;
   console.log(execSync(listCommand, { encoding: 'utf8' }));
-  
-  console.log(`\n🚀 Agent安装命令:`);
-  console.log(`   一键安装: curl -sSL https://raw.githubusercontent.com/diting-ai/diting-skills/main/install.sh | bash`);
-  console.log(`   下载地址: wget https://cdn.diting.cc/assets/${zipFileName}`);
+
+  // 分发口径（2026-11-25 更正）：
+  //   此前这里打印「下载地址: cdn.diting.cc/assets/<zip>」，但 install.sh 早已改为
+  //   直接拉 GitHub 源码包，CDN 上按版本命名的 zip 是停更残留（AGENT_INSTALL_GUIDE.md 第五节
+  //   明确写了「不要下载」）。照这行提示去 OSS 传包 → 文件既不可下载、也没人用，纯误导。
+  console.log(`\n🚀 分发方式:`);
+  console.log(`   SkillHub 上传: dist/diting-skills-v${version}-skill.zip`);
+  console.log(`   Agent 一键安装: curl -sSL https://raw.githubusercontent.com/DiTingAI/diting-ai-skills/main/install.sh | bash`);
+  console.log(`   源码包: https://codeload.github.com/DiTingAI/diting-ai-skills/tar.gz/refs/heads/main`);
+  console.log(`   ⚠️  不要上传到 cdn.diting.cc/assets/ —— 该路径已停更，install.sh 不再引用`);
   
 } catch (error) {
   console.error(`❌ 创建ZIP包失败: ${error.message}`);

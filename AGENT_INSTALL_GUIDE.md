@@ -6,7 +6,7 @@
 ## 一、装什么
 
 谛听 AI Skills 是一个**纯 Node 脚本包**（`bin/` + `scripts/` + `references/`），
-调用 `https://api.diting.cc` 完成 B 站视频转写与知识库检索。
+调用 `https://api.diting.cc` 完成 B 站 / 抖音 / 小红书视频与本地音视频的转写，以及知识库检索。
 
 - 前置：Node.js **18+**（用到内置 `fetch`）
 - 依赖：**零**（不需要 `npm install`）

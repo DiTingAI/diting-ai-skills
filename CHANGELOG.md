@@ -2,6 +2,89 @@
 
 所有项目的显著变更都将记录在此文件中。
 
+## [1.0.10] - 2026-11-25
+
+> 主题：**把文档里写了、代码里没有的三类输入补上**。
+> 1.0.4 的勘误承认过「上传接口一直存在」，但 CLI 一直只有 B 站两条调用；
+> 描述与实际能力的差距必须靠实现补齐，不能靠改文案掩盖。
+
+### 新增
+
+- **抖音 / 小红书转写**
+  `transcribe --url` 自动识别平台（`douyin.com` / `iesdouyin.com` / `xiaohongshu.com` / `xhslink.com`），
+  App 复制出来的整段分享文案可直接贴，服务端负责抠链接、解短链、规范化地址。
+  通道：`POST /v1/transcriptions/{platform}/check` → `POST /v1/transcriptions/{platform}`。
+
+- **本地音视频上传**
+  `transcribe --file <路径>`，multipart 直传 `POST /v1/transcriptions/upload`，单文件 ≤ 200MB。
+  超限在本地就拦掉，不浪费上传时间、也不创建任务。
+
+- **`scripts/shared.js` 新增 `requestMultipart`**
+  手工拼 boundary（不依赖 Node 19.8 才有的 `fs.openAsBlob`），保留全部渠道埋点头，
+  并与 `requestJSON` 共用同一套响应解析与错误话术（401 / 402 / 429 的转化入口不重复实现两遍）。
+
+### 修正
+
+- **删除「解析失败会白跑一次扣额度」的错误表述**
+  实际扣费点在「音频提取完成」之后（`diting-api/services/video_service.go` 步骤 3.13），
+  链接非法、平台不支持、解析失败都不会创建任务，**一分额度都不扣**；
+  失败任务已扣的时长系统还会退还（`shouldRefundOnDelete` 注释亦明确 failed 已退）。
+  SKILL.md / README.md / references/transcribe.md 已统一改正，并补上额度口径说明。
+
+- **小红书短链补齐 `xhslink.cn`**
+  App 现在分享出来的是 `xhslink.cn`（不是 `.com`），只认 `.com` 会把真实分享判成
+  「暂不支持该链接」。后端 `services/platform_video_test.go` 早有「小红书短链cn真实形态」用例，
+  CLI 侧漏了——已补，并加了真实分享文案的回归用例。
+
+- **失败任务不再显示「未知错误」**
+  `GET /api/v1/videos/{id}/status` 返回的失败原因是 `error_msg`，
+  而 `pollTask` 读的是 `status.error`（后端根本没这个 key），
+  于是所有失败一律显示「未知错误」。现在读 `error_msg` 并带上 `current_step`，
+  例如：`任务 xxx 失败（extracting_audio）: 处理失败，请稍后重试`。
+
+- **删除能力从「✅ 支持」降为「❌ 暂不支持」，401 也不再一律说成 Key 过期**
+  实测 `DELETE /api/v1/videos/{id}` 用 API Key 调用返回 401（该路由挂 `AuthRequired`，只认 JWT），
+  而 `GET /api/v1/videos/{id}` 与 `POST /api/v1/videos/{id}/retry` 用同一把 Key 都正常。
+  此前 CLI 把这类 401 统一报成「API Key 无效或已过期」，用户只会去反复重建 Key。
+  现在按服务端原文区分：提到「登录 / 令牌」→ 说明这是只认网页登录态的接口；
+  否则才是 Key 本身失效。SKILL.md / README / references 的能力表同步改正。
+
+- **错误文案优先级修正**
+  后端错误形状是 `{code, message, error:{error_code, message, detail}}`，其中 `detail` 常是技术词
+  （如「无效的请求参数」），能直接给用户看的是 `error.message` / 顶层 `message`
+  （如「无法获取视频时长，请稍后重试；若持续失败请改用本地上传」）。
+  此前先取 `detail`，等于把可执行建议换成了无信息量的一句话。
+
+- **重复文件不再报成失败**
+  服务端按内容哈希判重，返回的 `duplicate_files` 表示「这个文件此前已转过」，
+  现在单独给一句带任务列表出口的提示，而不是混在失败文案里、把 Agent 推向重复上传。
+
+- **`b23.tv` 短链真正可用了**
+  此前 `transcribe.js` 的本地校验只认 `bilibili.com/video/BV…` 与 `av…`，
+  而 SKILL.md 一直写着「支持 b23.tv 短链」——文档承诺与实现不一致。
+  现在短链不再被本地拒绝，交由服务端解析（`video_service.go` 已把 b23.tv 视为 B 站域名）。
+
+### 通道说明（重要）
+
+抖音 / 小红书 / 上传**不能**走 `/api/v1/videos/{douyin,xhs,upload}`：
+那组路由挂的是 `mainmw.AuthRequired`（只认 JWT），API Key 打过去必然 401。
+本 Skill 统一走 `/v1/*`（`VerifyAPIKey`）。B 站仍走 `/api/v1/videos/*`，因为多P / 合集批量只有这条通道有。
+
+### 待跟进（服务端，不在本包范围内）
+
+- **小红书取流偶发失败**（2026-11-25 实测 1 例）：提交侧（短链解析、元数据探测、建任务）正常，
+  该笔记在服务端 `extracting_audio` 阶段失败，`error_msg` 只有通用文案「处理失败，请稍后重试」。
+  排查方向：家宽 worker `pickStream` 按体积最小选档，注释假设「各档都是完整 mp4」，
+  若最小档是纯视频轨则步骤 3.8 的 ffprobe 检查判死；且 `translateError` 没有小红书 / 媒体类分支，
+  真实错误被吞掉。修复在 diting-api 侧，与本 Package 无关。
+
+### 兼容性
+
+- `--url` / `--task-id` / `--poll` / `--list` 等既有参数与返回字段：**完全不变**。
+- 返回结构新增 `platform` 字段（`bilibili` / `douyin` / `xhs`）；上传额外返回
+  `fileNames` / `failedFiles` / `duplicateFiles`。老调用方忽略即可。
+- 已配置 `DITING_API_KEY` 的用户无需任何操作。
+
 ## [1.0.8] - 2026-11-24
 
 > 主题：**把「需要账号」说在前面**。命令与返回结构一行没改，只修一件事：

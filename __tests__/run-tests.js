@@ -10,7 +10,9 @@ const testFiles = [
   'shared.test.js',
   'config.test.js',
   'channel.test.js',
-  'cli.test.js'
+  'platform.test.js',
+  'cli.test.js',
+  'install.test.js'
 ];
 
 let passed = 0;

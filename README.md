@@ -1,14 +1,15 @@
 # 谛听 AI Skills（Diting Skill）
 
-[![Version](https://img.shields.io/badge/version-1.0.8-green.svg)]()
+[![Version](https://img.shields.io/badge/version-1.0.10-green.svg)]()
 [![License: MIT-0](https://img.shields.io/badge/License-MIT--0-blue.svg)](https://opensource.org/licenses/MIT-0)
 [![Node](https://img.shields.io/badge/Node.js-18%2B-lightgrey.svg)]()
 [![GitHub Stars](https://img.shields.io/github/stars/DiTingAI/diting-ai-skills?style=social)](https://github.com/DiTingAI/diting-ai-skills)
 [![Docs](https://img.shields.io/badge/docs-GitHub%20Pages-blue)](https://ditingai.github.io/diting-ai-skills/)
 
-**B 站视频 → 逐字稿 + AI 纪要，Agent 一句话调用；结果沉淀进可检索的私有知识库。**
+**B 站 / 抖音 / 小红书视频 + 本地音视频 → 逐字稿 + AI 纪要，Agent 一句话调用；结果沉淀进可检索的私有知识库。**
 
-适配 SkillHub / 小龙虾助手 / Cursor / Claude / Codex 等可直接执行 shell 命令的 Agent。
+适配 SkillHub / 小龙虾助手 / WorkBuddy / Cursor / Claude / Codex 等可直接执行 shell 命令的 Agent。
+（WorkBuddy = 腾讯云 CodeBuddy 团队的桌面 AI 智能体，底层兼容 OpenClaw 技能体系，可在 SkillHub 商店直接装本 Skill。）
 
 ---
 
@@ -18,15 +19,23 @@
 |---|---|
 | B 站单视频转写（含 `b23.tv` 短链） | ✅ |
 | B 站多P / 合集批量转写（`--batch-all`） | ✅ |
+| 抖音视频转写（链接或整段分享文案） | ✅ |
+| 小红书视频转写（链接或整段分享文案） | ✅ |
+| 本地音视频上传（`--file`，单文件 ≤ 200MB） | ✅ |
 | 任务状态查询、轮询到完成 | ✅ |
 | 读取原文 / 纪要 / 大纲 / 思维导图 / 问答 / 润色结果 | ✅（只读） |
 | 按关键词检索私有知识库、按文件名搜文件 | ✅ |
-| 视频列表、重试、删除 | ✅ |
-| 本地文件上传 | ❌ 暂不支持，用网页端 |
+| 视频列表、重试 | ✅ |
+| 删除视频 | ❌ 暂不支持（接口只认网页登录态，用网页端） |
+| YouTube / 快手等其他平台 | ❌ 暂不支持，用网页端 |
 | 重命名 / 标签 / 文件夹管理 | ❌ 暂不支持，用网页端 |
 | 重新生成大纲 / 思维导图 / 问答 / 润色 | ❌ 暂不支持，网页端生成后可读 |
 
 > 不承诺具体耗时。实际耗时取决于视频时长、网络与当前队列，合集批量会排队。
+>
+> 额度只在「音频提取完成」后才扣减；链接非法、平台不支持、解析失败都不会创建任务，不扣额度。
+
+
 
 ---
 
@@ -53,8 +62,15 @@ echo 'export DITING_API_KEY=你的Key' >> ~/.zshrc && source ~/.zshrc
 ```bash
 diting transcribe --url "https://www.bilibili.com/video/BV1f6HheYExS"
 diting config        # 自查：Key 脱敏状态、渠道、base URL
-diting --version     # 1.0.8 (channel=skillhub)
+diting --version     # 1.0.10 (channel=skillhub)
 ```
+
+> **跑不通？九成是这三条**：
+> ① `command not found: diting` → 用 `node bin/diting.js ...`，或把 `~/.diting-skills` 加进 `PATH`；
+> ② `401` / Key 无效 → Key 没导出或复制不全，先跑 `diting config` 自查，再 `export DITING_API_KEY=新Key`；
+> ③ `402` / `E2004` 可用时长不足 → 额度是账号级的，去 <https://diting.cc/pricing?from=skillhub&c=20261123-skillhub&client=skill> 买时长包。
+>
+> 其余报错与排查顺序见下方 [七、常见问题](#七常见问题)，完整错误码表见 [ERROR_HANDLING.md](ERROR_HANDLING.md)。
 
 ---
 
@@ -97,6 +113,13 @@ node scripts/transcribe.js --url "https://www.bilibili.com/video/BV1f6HheYExS" -
 
 # 整合集一次性提交
 node scripts/transcribe.js --url "https://www.bilibili.com/video/BV1f6HheYExS" --batch-all
+
+# 抖音 / 小红书（贴链接或整段分享文案都行）
+node scripts/transcribe.js --url "https://v.douyin.com/xxxxxxx/"
+node scripts/transcribe.js --url "https://www.xiaohongshu.com/explore/xxxxxxx"
+
+# 本地音视频（单文件 ≤ 200MB）
+node scripts/transcribe.js --file "/path/to/meeting.mp4"
 
 # 查状态 / 轮询到完成
 node scripts/transcribe.js --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --poll
@@ -162,8 +185,10 @@ node scripts/transcribe.js --video-id <id> --delete
 export PATH="$HOME/.diting-skills:$PATH"
 ```
 
-**Q: 想转本地文件 / 抖音 / 小红书？**
-当前 Skill 只支持 B 站链接。其它来源请在网页端 <https://diting.cc> 提交。
+**Q: 想转抖音 / 小红书 / 本地文件？**
+直接给链接或分享文案即可：`diting transcribe --url "<链接或分享文案>"`；
+本地文件用 `diting transcribe --file "<路径>"`（单文件 ≤ 200MB，更大文件请在网页端 <https://diting.cc> 上传）。
+YouTube / 快手等暂不支持，也会明确报错而不会白跑一次。
 
 ---
 
@@ -186,7 +211,7 @@ export PATH="$HOME/.diting-skills:$PATH"
 
 ## 九、版本
 
-- **当前版本**：v1.0.8（2026-11-24）
+- **当前版本**：v1.0.10（2026-11-25）
 - **变更历史**：[CHANGELOG.md](CHANGELOG.md)
 - 本版重点：转写与读取结果新增**免登录笔记页直链** `web_url` / `web_urls`，把用户接回网页端
   （完整笔记、思维导图、时间轴、跨视频检索只在网页端）。上一版 1.0.6 修复了搜索误判、

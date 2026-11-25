@@ -1,6 +1,6 @@
 ---
 name: Diting
-description: 谛听 Diting —— 提交 B 站视频链接（单视频 / 多P / 合集批量）进行转写，查询任务状态，读取原文与纪要，并按关键词检索私有知识库。需要谛听账号（diting.cc 微信扫码即注册，免费送 30 分钟额度）与 DITING_API_KEY。
+description: 谛听 Diting —— 提交 B 站 / 抖音 / 小红书视频链接或本地音视频文件进行转写，查询任务状态，读取原文与纪要，并按关键词检索私有知识库。需要谛听账号（diting.cc 微信扫码即注册，免费送 30 分钟额度）与 DITING_API_KEY。
 metadata: {"openclaw": {"requires": {}, "optionalEnv": ["DITING_API_KEY"], "baseUrl": "https://api.diting.cc", "homepage": "https://diting.cc/?from=skillhub&c=20261123-skillhub"}}
 ---
 
@@ -13,25 +13,33 @@ metadata: {"openclaw": {"requires": {}, "optionalEnv": ["DITING_API_KEY"], "base
 
 | 能力 | 当前版本 | 说明 |
 |---|---|---|
-| B 站单视频转写 | ✅ 支持 | 贴链接即可，自动解析标题 / 时长 / 封面 |
+| B 站单视频转写 | ✅ 支持 | 贴链接即可，自动解析标题 / 时长 / 封面；支持 `bilibili.com/video/BV…`、`av…`、`b23.tv` 短链 |
 | B 站多P / 合集批量转写 | ✅ 支持 | `--batch-all` 一次提交整合集 |
+| 抖音视频转写 | ✅ 支持 | 贴链接或整段分享文案均可（服务端解析短链） |
+| 小红书视频转写 | ✅ 支持 | 贴链接或整段分享文案均可（服务端解析短链、补全标题/时长/封面） |
+| 本地音视频上传 | ✅ 支持 | `--file <路径>`，单文件 ≤ 200MB；更大的文件用网页端（5GB） |
+| 其他平台（YouTube / 快手等） | ❌ 暂不支持 | 直接告诉用户去网页端 diting.cc 提交，**不要尝试提交后再说失败**。未被支持时不会创建任务，也不扣额度 |
 | 查询任务状态、轮询到完成 | ✅ 支持 | |
 | 读取原文 / 纪要 / 大纲 / 思维导图 / 问答 / 润色结果 | ✅ 支持（读取） | 只读已有数据，不在此重新生成 |
 | 按关键词检索私有知识库 | ✅ 支持 | |
-| 按文件名搜索、视频列表、删除、重试 | ✅ 支持 | |
-| 本地文件上传 | ❌ 暂不支持 | 请用网页端 |
+| 按文件名搜索、视频列表、重试 | ✅ 支持 | |
+| 删除视频 | ❌ 暂不支持 | `DELETE /api/v1/videos/{id}` 只认网页登录态，API Key 调用返回 401。请引导用户去网页端删除 |
 | 重命名 / 标签 / 文件夹管理 | ❌ 暂不支持 | 请用网页端 |
 | 重新生成大纲 / 思维导图 / 问答 / 润色 | ❌ 暂不支持 | 网页端生成后，本 Skill 可读取 |
+
+> **关于额度**：时长在「音频提取完成」之后才扣减（diting-api `services/video_service.go` 步骤 3.13）。
+> 链接不合法、平台不支持、解析失败都不会创建任务，**一分额度都不扣**；失败任务已扣的时长系统会自动退还。
 
 **不要向用户承诺具体耗时。** 实际耗时取决于视频时长、网络与当前队列；短视频通常几分钟内即可出稿，
 合集批量会排队。只描述「提交成功 + 如何查进度」，不要报分钟数。
 
 ## 二、什么时候用
 
-1. 用户给出 B 站链接（含 `b23.tv` 短链），希望转成文字
-2. 用户问某个转写任务的进度 / 有没有完成
-3. 用户要看某个视频的原文、纪要、大纲
-4. 用户要在这份私有知识库里按关键词找内容
+1. 用户给出 B 站 / 抖音 / 小红书链接或分享文案（含 `b23.tv`、`v.douyin.com`、`xhslink.com` / `xhslink.cn` 短链），希望转成文字
+2. 用户给出本地音视频文件路径，希望转成文字（≤ 200MB）
+3. 用户问某个转写任务的进度 / 有没有完成
+4. 用户要看某个视频的原文、纪要、大纲
+5. 用户要在这份私有知识库里按关键词找内容
 
 ## 三、首次使用：先有账号，再拿 API Key（唯一前置条件）
 
@@ -68,7 +76,13 @@ https://api.diting.cc
 
 - 该文档覆盖的是**官方开放 API** `/v1/transcriptions/*`（bilibili / douyin / xhs / upload）与 `/v1/usage`，
   限流 60 次/分钟、5000 次/天，上传上限 200MB。
-- 本 Skill 当前版本走的是网页端兼容通道 `/api/v1/videos/*`（字段与本文件一致，未在开放 API 文档中列出）；
+- 本 Skill 分两条通道，**不要混用**：
+
+  | 场景 | 通道 | 原因 |
+  |---|---|---|
+  | B 站提交 / 查询 / 读取 / 搜索 | `/api/v1/videos/*` | 网页端兼容通道，支持多P / 合集批量 |
+  | 抖音 / 小红书 / 本地上传 | `/v1/transcriptions/*` | `/api/v1/videos/{douyin,xhs,upload}` 只认 JWT，API Key 打过去必然 401 |
+
   两者鉴权头相同，但额度与限流口径不同。字段有疑问时以实际返回为准，不要按开放 API 文档硬套。
 
 ### 渠道与埋点（不要删、不要改）
@@ -95,7 +109,7 @@ X-Aiditing-Client  固定 skill
 | 指令 | 角色 | 说明 | 详细文档 |
 |------|------|------|---------|
 | `/diting config` | 配置助手 | 检查 API Key / 渠道状态 | [references/auth.md](references/auth.md) |
-| `/diting transcribe` | 转写助手 | 提交 B 站链接、创建任务、轮询状态 | [references/transcribe.md](references/transcribe.md) |
+| `/diting transcribe` | 转写助手 | 提交 B 站 / 抖音 / 小红书链接或本地文件、创建任务、轮询状态 | [references/transcribe.md](references/transcribe.md) |
 | `/diting asset-read` | 文件助手 | 读取详情、原文、纪要、大纲 | [references/asset-read.md](references/asset-read.md) |
 | `/diting search` | 搜索助手 | 检索知识库、按文件名找文件 | [references/search.md](references/search.md) |
 
@@ -103,6 +117,9 @@ X-Aiditing-Client  固定 skill
 
 ```text
 包含 B 站链接 / b23.tv                    -> /diting transcribe（链接解析）
+包含抖音链接 / 分享文案（v.douyin.com）    -> /diting transcribe（平台解析）
+包含小红书链接 / 分享文案（xhslink.com）    -> /diting transcribe（平台解析）
+给了本地音视频文件路径                     -> /diting transcribe --file
 "查状态 / 进度 / 完成没"                  -> /diting transcribe（轮询状态）
 "看原文 / 纪要 / 大纲 / 思维导图"          -> /diting asset-read
 "搜索 / 找文件 / 知识库里有没有…"          -> /diting search
@@ -130,20 +147,45 @@ node scripts/transcribe.js --url "https://www.bilibili.com/video/BV1f6HheYExS" -
 node scripts/transcribe.js --url "https://www.bilibili.com/video/BV1f6HheYExS" --batch-all
 ```
 
-### 3. 轮询到完成
+### 3. 抖音 / 小红书转写
+
+```bash
+# 单条链接
+node scripts/transcribe.js --url "https://v.douyin.com/xxxxxxx/"
+node scripts/transcribe.js --url "https://www.xiaohongshu.com/explore/xxxxxxx"
+
+# 也可以直接贴 App 复制出来的整段分享文案（服务端会自己抠链接）
+node scripts/transcribe.js --url "8.97 复制打开抖音，看看【xxx】的作品 https://v.douyin.com/xxxxxxx/"
+```
+
+返回结构与 B 站一致：`taskIds` / `web_urls` / `web_library_url` / `portal_url`。
+若 `videoInfo.probe_failed` 为 true，说明标题 / 时长没探到。此时仍会尝试提交，服务端会再补探一次；
+但**如果两次都拿不到时长，接口会返回 `E1004`（无法获取视频时长）**。
+遇到 `E1004` 不要重复提交，按顺序处理：让用户确认链接是否有效 → 换 `--file` 传本地文件 → 或去网页端。
+
+### 4. 本地音视频转写
+
+```bash
+node scripts/transcribe.js --file "/path/to/meeting.mp4"
+```
+
+单文件上限 200MB（开放 API 限制）。超过会直接报错、不上传、不扣额度；
+更大文件让用户用网页端（上限 5GB）。
+
+### 5. 轮询到完成
 
 ```bash
 node scripts/transcribe.js --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --poll
 ```
 
-### 4. 获取原文 / 纪要 / 详情
+### 6. 获取原文 / 纪要 / 详情
 
 ```bash
 node scripts/asset_read.js --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c
 node scripts/asset_read.js --task-id 8f3a2b1c-6d4e-4f5a-9b8c-7d6e5f4a3b2c --type summary
 ```
 
-### 5. 搜索知识库
+### 7. 搜索知识库
 
 ```bash
 node scripts/search.js --query "吴恩达"
