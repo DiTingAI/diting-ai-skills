@@ -1,6 +1,6 @@
 # 谛听 AI Skills（Diting Skill）
 
-[![Version](https://img.shields.io/badge/version-1.0.10-green.svg)]()
+[![Version](https://img.shields.io/badge/version-1.0.11-green.svg)]()
 [![License: MIT-0](https://img.shields.io/badge/License-MIT--0-blue.svg)](https://opensource.org/licenses/MIT-0)
 [![Node](https://img.shields.io/badge/Node.js-18%2B-lightgrey.svg)]()
 [![GitHub Stars](https://img.shields.io/github/stars/DiTingAI/diting-ai-skills?style=social)](https://github.com/DiTingAI/diting-ai-skills)
@@ -62,7 +62,7 @@ echo 'export DITING_API_KEY=你的Key' >> ~/.zshrc && source ~/.zshrc
 ```bash
 diting transcribe --url "https://www.bilibili.com/video/BV1f6HheYExS"
 diting config        # 自查：Key 脱敏状态、渠道、base URL
-diting --version     # 1.0.10 (channel=skillhub)
+diting --version     # 1.0.11 (channel=skillhub)
 ```
 
 > **跑不通？九成是这三条**：
@@ -211,7 +211,7 @@ YouTube / 快手等暂不支持，也会明确报错而不会白跑一次。
 
 ## 九、版本
 
-- **当前版本**：v1.0.10（2026-11-25）
+- **当前版本**：v1.0.11（2026-11-26）
 - **变更历史**：[CHANGELOG.md](CHANGELOG.md)
 - 本版重点：转写与读取结果新增**免登录笔记页直链** `web_url` / `web_urls`，把用户接回网页端
   （完整笔记、思维导图、时间轴、跨视频检索只在网页端）。上一版 1.0.6 修复了搜索误判、
